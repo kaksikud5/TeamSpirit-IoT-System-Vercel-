@@ -81,8 +81,29 @@
             100% { box-shadow: 0 0 0 0 rgba(239,68,68, 0); }
         }
         
-        .metric-bar { height: 4px; border-radius: 4px 4px 0 0; position: absolute; bottom: 0; left: 0; right: 0; transition: height 0.3s ease, opacity 0.3s ease; opacity: 0.8; }
+        .metric-bar { height: 4px; border-radius: 4px 4px 0 0; position: absolute; bottom: 0; left: 0; right: 0; transition: height 0.3s ease, opacity 0.3s ease; opacity: 0.85; }
         .glass:hover .metric-bar { height: 6px; opacity: 1; }
+
+        .metric-theme-sky .metric-value { color: #0284c7; }
+        .metric-theme-emerald .metric-value { color: #059669; }
+        .metric-theme-violet .metric-value { color: #7c3aed; }
+        .metric-theme-cyan .metric-value { color: #0891b2; }
+        .metric-theme-amber .metric-value { color: #d97706; }
+        .metric-theme-indigo .metric-value { color: #4f46e5; }
+
+        .metric-theme-sky .metric-hint { color: #0ea5e9; }
+        .metric-theme-emerald .metric-hint { color: #10b981; }
+        .metric-theme-violet .metric-hint { color: #8b5cf6; }
+        .metric-theme-cyan .metric-hint { color: #06b6d4; }
+        .metric-theme-amber .metric-hint { color: #d97706; }
+        .metric-theme-indigo .metric-hint { color: #6366f1; }
+
+        .metric-theme-sky:hover { box-shadow: 0 20px 40px -10px rgba(14,165,233,0.16), inset 0 1px 0 rgba(255,255,255,1); }
+        .metric-theme-emerald:hover { box-shadow: 0 20px 40px -10px rgba(16,185,129,0.16), inset 0 1px 0 rgba(255,255,255,1); }
+        .metric-theme-violet:hover { box-shadow: 0 20px 40px -10px rgba(139,92,246,0.16), inset 0 1px 0 rgba(255,255,255,1); }
+        .metric-theme-cyan:hover { box-shadow: 0 20px 40px -10px rgba(6,182,212,0.16), inset 0 1px 0 rgba(255,255,255,1); }
+        .metric-theme-amber:hover { box-shadow: 0 20px 40px -10px rgba(245,158,11,0.16), inset 0 1px 0 rgba(255,255,255,1); }
+        .metric-theme-indigo:hover { box-shadow: 0 20px 40px -10px rgba(99,102,241,0.16), inset 0 1px 0 rgba(255,255,255,1); }
         
         .trend-tab { 
             border: 1px solid rgba(219,234,254,0.6); 
@@ -111,15 +132,10 @@
         
         .score-chip { display: inline-flex; align-items: center; border-radius: 999px; padding: 0.25rem 0.65rem; font-weight: 600; font-size: 0.75rem; background: linear-gradient(135deg, #ecfeff, #cffafe); color: #0f766e; border: 1px solid #a5f3fc; box-shadow: 0 2px 4px rgba(6,182,212,0.1); }
         
-        /* 指标卡标题与单位同一行（避免 L/min、(ms/cm) 等折到下一行） */
         .metric-card-title {
             white-space: nowrap;
             display: inline-block;
         }
-        /*
-         * 块级 + overflow-x:auto：flex 子项 min-width:auto 时无法正确产生横向滚动，末尾 “)” 会被父级 overflow-hidden 裁掉。
-         * 隐藏滚动条，避免标题与数值之间出现灰线。
-         */
         .metric-card-title-row {
             display: block;
             width: 100%;
@@ -135,7 +151,6 @@
             width: 0;
             height: 0;
         }
-        /* 六列栅格下略收紧字距；字号略小于默认 xs，避免英文标题裁切 */
         @media (min-width: 1280px) {
             #step-cards .metric-card-title {
                 font-size: 0.75rem;
@@ -151,7 +166,6 @@
 </head>
 <body class="antialiased text-gray-800">
 
-<!-- Navbar -->
 <nav class="nav-glass sticky top-0 z-50 px-6 py-3">
     <div class="container mx-auto max-w-7xl flex justify-between items-center">
         <div class="flex items-center gap-3">
@@ -172,84 +186,87 @@
 
 <main class="container mx-auto px-4 py-6 max-w-7xl">
     <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4 mb-6" id="step-cards">
-        <div class="glass p-5 rounded-2xl cursor-pointer relative" onclick="openModal('f1')">
+        <div class="glass metric-theme-sky p-5 rounded-2xl cursor-pointer relative" onclick="openModal('f1')">
             <div class="metric-card-title-row mb-1">
                 <span class="metric-card-title text-xs text-gray-400 font-semibold uppercase tracking-wide" data-i18n="card_f1">入水流量（轻） </span>
             </div>
-            <div id="val-f1" class="text-3xl font-extrabold mt-2 skeleton h-9 w-24"></div>
+            <div id="val-f1" class="metric-value text-3xl font-extrabold mt-2 skeleton h-9 w-24"></div>
             <div class="mt-2 text-[11px] leading-4 text-gray-500 flex items-center gap-2">
                 <span class="status-dot gray" id="range-dot-f1"></span>
                 <span id="range-f1">--</span>
             </div>
-            <div class="text-xs text-blue-500 mt-3 font-medium opacity-80 group-hover:opacity-100 transition-opacity" data-i18n="click_detail">点击查看详情 → </div>
-            <div class="metric-bar bg-gradient-to-r from-blue-400 to-blue-500" id="bar-f1"></div>
+            <div class="metric-hint text-xs mt-3 font-medium opacity-80 transition-opacity" data-i18n="click_detail">点击查看详情 → </div>
+            <div class="metric-bar bg-gradient-to-r from-sky-400 to-blue-500" id="bar-f1"></div>
         </div>
-        <div class="glass p-5 rounded-2xl cursor-pointer relative" onclick="openModal('cond')">
+
+        <div class="glass metric-theme-emerald p-5 rounded-2xl cursor-pointer relative" onclick="openModal('cond')">
             <div class="metric-card-title-row mb-1">
                 <span class="metric-card-title text-xs text-gray-400 font-semibold uppercase tracking-wide" data-i18n="card_cond">电导率 </span>
             </div>
-            <div id="val-cond" class="text-3xl font-extrabold mt-2 skeleton h-9 w-24"></div>
+            <div id="val-cond" class="metric-value text-3xl font-extrabold mt-2 skeleton h-9 w-24"></div>
             <div class="mt-2 text-[11px] leading-4 text-gray-500 flex items-center gap-2">
                 <span class="status-dot gray" id="range-dot-cond"></span>
                 <span id="range-cond">--</span>
             </div>
-            <div class="text-xs text-green-600 mt-3 font-medium opacity-80" data-i18n="click_detail">点击查看详情 → </div>
-            <div class="metric-bar bg-gradient-to-r from-green-400 to-emerald-500" id="bar-cond"></div>
+            <div class="metric-hint text-xs mt-3 font-medium opacity-80" data-i18n="click_detail">点击查看详情 → </div>
+            <div class="metric-bar bg-gradient-to-r from-emerald-400 to-green-500" id="bar-cond"></div>
         </div>
-        <div class="glass p-5 rounded-2xl cursor-pointer relative" onclick="openModal('ph')">
+
+        <div class="glass metric-theme-violet p-5 rounded-2xl cursor-pointer relative" onclick="openModal('ph')">
             <div class="metric-card-title-row mb-1">
                 <span class="metric-card-title text-xs text-gray-400 font-semibold uppercase tracking-wide" data-i18n="card_ph">PH值 </span>
             </div>
-            <div id="val-ph" class="text-3xl font-extrabold mt-2 skeleton h-9 w-20"></div>
+            <div id="val-ph" class="metric-value text-3xl font-extrabold mt-2 skeleton h-9 w-20"></div>
             <div class="mt-2 text-[11px] leading-4 text-gray-500 flex items-center gap-2">
                 <span class="status-dot gray" id="range-dot-ph"></span>
                 <span id="range-ph">--</span>
             </div>
-            <div class="text-xs text-indigo-500 mt-3 font-medium opacity-80" data-i18n="click_detail">点击查看详情 → </div>
-            <div class="metric-bar bg-gradient-to-r from-indigo-400 to-indigo-600" id="bar-ph"></div>
+            <div class="metric-hint text-xs mt-3 font-medium opacity-80" data-i18n="click_detail">点击查看详情 → </div>
+            <div class="metric-bar bg-gradient-to-r from-violet-400 to-indigo-500" id="bar-ph"></div>
         </div>
-        <div class="glass p-5 rounded-2xl cursor-pointer relative" onclick="openModal('level')">
+
+        <div class="glass metric-theme-cyan p-5 rounded-2xl cursor-pointer relative" onclick="openModal('level')">
             <div class="metric-card-title-row mb-1">
                 <span class="metric-card-title text-xs text-gray-400 font-semibold uppercase tracking-wide" data-i18n="card_level">液位 </span>
             </div>
-            <div id="val-level" class="text-3xl font-extrabold mt-2 skeleton h-9 w-20"></div>
+            <div id="val-level" class="metric-value text-3xl font-extrabold mt-2 skeleton h-9 w-20"></div>
             <div class="mt-2 text-[11px] leading-4 text-gray-500 flex items-center gap-2">
                 <span class="status-dot gray" id="range-dot-level"></span>
                 <span id="range-level">--</span>
             </div>
-            <div class="text-xs text-cyan-600 mt-3 font-medium opacity-80" data-i18n="click_detail">点击查看详情 → </div>
-            <div class="metric-bar bg-gradient-to-r from-cyan-400 to-blue-500" id="bar-level"></div>
+            <div class="metric-hint text-xs mt-3 font-medium opacity-80" data-i18n="click_detail">点击查看详情 → </div>
+            <div class="metric-bar bg-gradient-to-r from-cyan-400 to-teal-500" id="bar-level"></div>
         </div>
-        <div class="glass p-5 rounded-2xl cursor-pointer relative" onclick="openModal('turbidity')">
+
+        <div class="glass metric-theme-amber p-5 rounded-2xl cursor-pointer relative" onclick="openModal('turbidity')">
             <div class="metric-card-title-row mb-1">
                 <span class="metric-card-title text-xs text-gray-400 font-semibold uppercase tracking-wide" data-i18n="card_turbidity">浊度 </span>
             </div>
-            <div id="val-turbidity" class="text-3xl font-extrabold mt-2 skeleton h-9 w-24"></div>
+            <div id="val-turbidity" class="metric-value text-3xl font-extrabold mt-2 skeleton h-9 w-24"></div>
             <div class="mt-2 text-[11px] leading-4 text-gray-500 flex items-center gap-2">
                 <span class="status-dot gray" id="range-dot-turbidity"></span>
                 <span id="range-turbidity">--</span>
             </div>
-            <div class="text-xs text-purple-600 mt-3 font-medium opacity-80" data-i18n="click_detail">点击查看详情 → </div>
-            <div class="metric-bar bg-gradient-to-r from-purple-400 to-fuchsia-500" id="bar-turbidity"></div>
+            <div class="metric-hint text-xs mt-3 font-medium opacity-80" data-i18n="click_detail">点击查看详情 → </div>
+            <div class="metric-bar bg-gradient-to-r from-amber-400 to-fuchsia-500" id="bar-turbidity"></div>
         </div>
-        <div class="glass p-5 rounded-2xl cursor-pointer relative" onclick="openModal('f2')">
+
+        <div class="glass metric-theme-indigo p-5 rounded-2xl cursor-pointer relative" onclick="openModal('f2')">
             <div class="metric-card-title-row mb-1">
                 <span class="metric-card-title text-xs text-gray-400 font-semibold uppercase tracking-wide" data-i18n="card_f2">入水流量（重） </span>
             </div>
-            <div id="val-f2" class="text-3xl font-extrabold mt-2 skeleton h-9 w-20"></div>
+            <div id="val-f2" class="metric-value text-3xl font-extrabold mt-2 skeleton h-9 w-20"></div>
             <div class="mt-2 text-[11px] leading-4 text-gray-500 flex items-center gap-2">
                 <span class="status-dot gray" id="range-dot-f2"></span>
                 <span id="range-f2">--</span>
             </div>
-            <div class="text-xs text-indigo-500 mt-3 font-medium opacity-80" data-i18n="click_detail">点击查看详情 → </div>
+            <div class="metric-hint text-xs mt-3 font-medium opacity-80" data-i18n="click_detail">点击查看详情 → </div>
             <div class="metric-bar bg-gradient-to-r from-indigo-500 to-blue-600" id="bar-f2"></div>
         </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 lg:items-stretch gap-6">
-        <!-- Left: Quality + Chart -->
         <div class="lg:col-span-2 space-y-6 lg:min-h-0">
-            <!-- Quality Grade -->
             <div class="glass p-6 rounded-2xl" id="step-quality">
                 <h2 class="text-lg font-bold mb-4 text-slate-600" data-i18n="quality_title">综合水质评级 </h2>
                 <div class="flex flex-col xl:flex-row xl:items-start gap-4 xl:gap-6">
@@ -264,7 +281,7 @@
                     </div>
                 </div>
             </div>
-            <!-- Chart -->
+
             <div class="glass p-6 rounded-2xl" id="step-chart">
                 <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
                     <h2 class="text-lg font-bold text-slate-600" data-i18n="chart_title">参数变化趋势 (近2000条数据) </h2>
@@ -340,7 +357,6 @@
 </div>
 <button id="cfg-toggle-open" type="button" class="hidden fixed right-4 bottom-4 z-40 text-xs bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white px-4 py-2.5 rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5" data-i18n="config_open" data-guide-step="config-open">打开配置</button>
 
-<!-- Detail Modal -->
 <div id="detail-modal" class="ph-detail-modal fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm items-center justify-center p-4">
     <div class="bg-white/95 backdrop-blur-xl rounded-3xl max-w-lg w-full p-7 relative shadow-2xl border border-white/50 animate-slide-up">
         <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
