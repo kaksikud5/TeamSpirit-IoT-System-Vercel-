@@ -294,7 +294,7 @@ const modalConfigs = {
         title: {zh: "综合水质评级标准", en: "Water Quality Grading Standard"},
         desc: {zh: "分级参考《生活饮用水卫生标准》(GB 5749) 与《城镇污水再生利用 城市杂用水水质》(GB/T 18920)，结合本系统实时数据进行用途分类。", en: "The grading references GB 5749 and GB/T 18920, then maps real-time data to practical reuse categories."},
         ranges: [
-            {color: "green", condition: {zh: "90-100：可直接饮用", en: "90-100: Directly Drinkable"}, desc: {zh: "满足高质量再生要求，可作为高标准用水。", en: "Meets high-quality reuse requirements."}},
+            {color: "green", condition: {zh: "90-100：绿化灌溉优质回用水", en: "90-100: High-Quality Irrigation Reuse Water"}, desc: {zh: "满足较高质量回用要求，适用于绿化灌溉、景观补水等高标准非饮用场景", en: "Suitable for high-standard non-potable reuse such as landscape irrigation and ornamental water replenishment."}},
             {color: "green", condition: {zh: "75-89：绿化灌溉回用水", en: "75-89: Landscape & Irrigation Reuse"}, desc: {zh: "适用于绿化灌溉与景观补水等非饮用场景。", en: "Suitable for landscaping and irrigation reuse in non-potable scenarios."}},
             {color: "yellow", condition: {zh: "60-74：杂用回用水", en: "60-74: Municipal Reuse"}, desc: {zh: "参考 GB/T 18920，可用于冲厕、道路清洁等非接触杂用。", en: "Per GB/T 18920 reference, suitable for non-contact municipal reuse."}},
             {color: "red", condition: {zh: "45-59：受限回用水", en: "45-59: Restricted Reuse"}, desc: {zh: "仅建议在受控场景回用，需加强过程管理。", en: "Only for controlled reuse scenarios."}},
