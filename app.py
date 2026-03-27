@@ -175,46 +175,11 @@ def classify_quality(ph, conductivity, turbidity, lang="zh"):
     score = max(0, min(100, int(math.floor(raw_total))))
 
     grades = [
-        (
-            90,
-            "绿化灌溉优质回用水",
-            "High-Quality Irrigation Reuse Water",
-            "#16a34a",
-            "满足较高质量回用要求，适用于绿化灌溉、景观补水等高标准非饮用场景",
-            "Suitable for high-standard non-potable reuse such as landscape irrigation and ornamental water replenishment"
-        ),
-        (
-            75,
-            "绿化灌溉回用水",
-            "Landscape & Irrigation Reuse",
-            "#22c55e",
-            "适用于绿化灌溉与景观补水等非饮用场景",
-            "Suitable for landscaping and irrigation reuse in non-potable scenarios"
-        ),
-        (
-            60,
-            "杂用回用水",
-            "Municipal Reuse Water",
-            "#eab308",
-            "参考GB/T 18920，可用于冲厕、道路清洁等非接触杂用",
-            "Per GB/T 18920 reference, suitable for toilet flushing and other non-contact municipal reuse"
-        ),
-        (
-            45,
-            "受限回用水",
-            "Restricted Reuse Water",
-            "#f97316",
-            "仅建议在受控场景下回用，需加强过程管理与用途限制",
-            "Only recommended for restricted and controlled reuse with strengthened process management"
-        ),
-        (
-            0,
-            "待处理水",
-            "Further Treatment Required",
-            "#dc2626",
-            "不建议回用，需继续处理后再使用",
-            "Reuse is not recommended before further treatment"
-        ),
+        (90, "绿化灌溉优质回用水", "High-quality Landscape & Irrigation Reuse", "#16a34a", "满足较高质量回用要求，适用于绿化灌溉、景观补水等高标准非饮用场景", "Suitable for high-standard non-potable reuse such as landscape irrigation and ornamental water replenishment"),
+        (75, "绿化灌溉回用水", "Landscape & Irrigation Reuse", "#22c55e", "适用于绿化灌溉与景观补水等非饮用场景", "Suitable for landscaping and irrigation reuse in non-potable scenarios"),
+        (60, "杂用回用水", "Municipal Reuse Water", "#eab308", "参考GB/T 18920，可用于冲厕、道路清洁等非接触杂用", "Per GB/T 18920 reference, suitable for toilet flushing and other non-contact municipal reuse"),
+        (45, "受限回用水", "Restricted Reuse Water", "#f97316", "仅建议在受控场景下回用", "Only recommended for restricted and controlled reuse"),
+        (0, "待处理水", "Further Treatment Required", "#dc2626", "不建议回用，需继续处理后再使用", "Reuse is not recommended before further treatment"),
     ]
 
     grade_zh, grade_en, color = "待处理水", "Further Treatment Required", "#dc2626"
