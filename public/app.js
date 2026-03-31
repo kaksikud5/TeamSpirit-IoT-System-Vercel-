@@ -310,6 +310,7 @@ let currentTrend = 'overview';
 let chartResizeBound = false;
 let latestLatencyMs = null;
 let latestLatencyStatus = 'gray';
+let currentZoomRange = { start: 55, end: 100 };
 
 const metricMeta = {
     f1: { field: 'field1', legendKey: 'legend_f1', axis: 'axis_flow', color: '#2563eb' },
@@ -357,7 +358,6 @@ function setDot(id, status) {
     el.className = 'status-dot ' + status;
 }
 
-// Init tooltips
 function initTooltips() {
     const tips = {
         'tip_ph': i18n[currentLang].tip_ph,
@@ -375,7 +375,6 @@ function initTooltips() {
     tippy('.info-icon', { placement: 'top', animation: 'scale', theme: 'light-border' });
 }
 
-// A/B + Language + Init
 document.addEventListener('DOMContentLoaded', () => {
     const btn = document.querySelector('.ab-btn');
     if (btn && abVariant === 'A') {
@@ -565,7 +564,6 @@ async function measureNetworkLatency() {
     updateLatencyIndicator();
 }
 
-// Modal
 function openModal(type) {
     const config = modalConfigs[type];
     if (!config) return;
@@ -610,7 +608,6 @@ function closeModal() {
     document.getElementById('detail-modal').classList.remove('active');
 }
 
-// Data
 let allFeeds = [];
 
 async function fetchData() {
@@ -897,26 +894,7 @@ function buildQualityModalDesc(baseDesc) {
     return `${baseDesc} ${latestClassification.score_formula}`;
 }
 
-function updateChart() {
-    const el = document.getElementById('main-chart');
-    if (!el) return;
-    el.classList.remove('skeleton');
-    if (!chart) {
-        chart = echarts.init(el);
-    }
-
-    const option = currentTrend === 'overview'
-        ? buildOverviewOption()
-        : buildSingleOption(currentTrend);
-
-    chart.setOption(option, true);
-    if (!chartResizeBound) {
-        window.addEventListener('resize', () => chart && chart.resize());
-        chartResizeBound = true;
-    }
-}
-
-// ---------- 时间与坐标轴自适应：新增/重写部分 ----------
+// ---------- 时间轴与自适应范围 ----------
 function formatDateTimeFull(value) {
     if (!value) return '--';
     const d = new Date(value);
@@ -1018,8 +996,8 @@ function getAdaptiveValueRange(values, options = {}) {
     if (minVal === maxVal) {
         const base = Math.abs(maxVal) || minSpan;
         const delta = Math.max(base * 0.25, minSpan * 0.5);
-        minVal = minVal - delta;
-        maxVal = maxVal + delta;
+        minVal -= delta;
+        maxVal += delta;
     }
 
     let span = maxVal - minVal;
@@ -1059,34 +1037,54 @@ function getAdaptiveValueRange(values, options = {}) {
     };
 }
 
-function getSingleAxisRange(key, values) {
+function getVisibleIndexRange(total, zoomRange) {
+    if (total <= 0) return { startIndex: 0, endIndex: -1 };
+    const start = zoomRange?.start ?? 0;
+    const end = zoomRange?.end ?? 100;
+    const startIndex = Math.max(0, Math.floor((start / 100) * (total - 1)));
+    const endIndex = Math.min(total - 1, Math.ceil((end / 100) * (total - 1)));
+    return { startIndex, endIndex };
+}
+
+function getVisibleValues(values, zoomRange) {
+    const { startIndex, endIndex } = getVisibleIndexRange(values.length, zoomRange);
+    return values.slice(startIndex, endIndex + 1);
+}
+
+function getSingleAxisRange(key, values, zoomRange = null) {
+    const visibleValues = zoomRange ? getVisibleValues(values, zoomRange) : values;
+
     if (key === 'ph') return { min: 0, max: 14 };
     if (key === 'level') return { min: 0, max: 100 };
+
     if (key === 'cond') {
-        return getAdaptiveValueRange(values, {
+        return getAdaptiveValueRange(visibleValues, {
             floor: 0,
             minSpan: 0.2,
             paddingRatio: 0.15,
             smallValueBoost: true
         });
     }
+
     if (key === 'turbidity') {
-        return getAdaptiveValueRange(values, {
+        return getAdaptiveValueRange(visibleValues, {
             floor: 0,
             minSpan: 1,
             paddingRatio: 0.15,
             smallValueBoost: false
         });
     }
+
     if (key === 'f1' || key === 'f2') {
-        return getAdaptiveValueRange(values, {
+        return getAdaptiveValueRange(visibleValues, {
             floor: 0,
             minSpan: 0.05,
             paddingRatio: 0.2,
             smallValueBoost: true
         });
     }
-    return getAdaptiveValueRange(values, {
+
+    return getAdaptiveValueRange(visibleValues, {
         floor: 0,
         minSpan: 1,
         paddingRatio: 0.12,
@@ -1115,6 +1113,45 @@ function calcQualityScoreFromFeed(feed) {
 
 function getScoreSeries() {
     return allFeeds.map(f => calcQualityScoreFromFeed(f));
+}
+
+function attachChartEvents() {
+    if (!chart) return;
+    chart.off('datazoom');
+    chart.on('datazoom', () => {
+        const option = chart.getOption();
+        const zoom = option?.dataZoom?.[0];
+        if (zoom) {
+            currentZoomRange = {
+                start: zoom.start ?? currentZoomRange.start,
+                end: zoom.end ?? currentZoomRange.end
+            };
+        }
+        if (currentTrend !== 'overview') {
+            updateChart();
+        }
+    });
+}
+
+function updateChart() {
+    const el = document.getElementById('main-chart');
+    if (!el) return;
+    el.classList.remove('skeleton');
+    if (!chart) {
+        chart = echarts.init(el);
+    }
+
+    const option = currentTrend === 'overview'
+        ? buildOverviewOption()
+        : buildSingleOption(currentTrend);
+
+    chart.setOption(option, true);
+    attachChartEvents();
+
+    if (!chartResizeBound) {
+        window.addEventListener('resize', () => chart && chart.resize());
+        chartResizeBound = true;
+    }
 }
 
 function buildOverviewOption() {
@@ -1153,8 +1190,8 @@ function buildOverviewOption() {
         },
         legend: { data: [T('legend_score')], bottom: 0, icon: 'roundRect', textStyle: { fontSize: 13, color: '#475569' } },
         dataZoom: [
-            { type: 'inside', start: 55, end: 100 },
-            { start: 55, end: 100, height: 18, bottom: 32 }
+            { type: 'inside', start: currentZoomRange.start, end: currentZoomRange.end },
+            { start: currentZoomRange.start, end: currentZoomRange.end, height: 18, bottom: 32 }
         ],
         grid: { left: '9%', right: '5%', top: 58, bottom: 78, containLabel: true },
         xAxis: {
@@ -1200,7 +1237,7 @@ function buildSingleOption(key) {
     const timeAxis = getTimeAxisData();
     const times = timeAxis.map(t => t.full);
     const data = getSeriesValues(key);
-    const axisRange = getSingleAxisRange(key, data);
+    const axisRange = getSingleAxisRange(key, data, currentZoomRange);
     const label = T(meta.legendKey);
     const formatter = buildTimeAxisLabelFormatter(timeAxis);
 
@@ -1218,8 +1255,8 @@ function buildSingleOption(key) {
         },
         legend: { data: [label], bottom: 0, icon: 'roundRect', textStyle: { fontSize: 13, color: '#475569' } },
         dataZoom: [
-            { type: 'inside', start: 55, end: 100 },
-            { start: 55, end: 100, height: 18, bottom: 32 }
+            { type: 'inside', start: currentZoomRange.start, end: currentZoomRange.end },
+            { start: currentZoomRange.start, end: currentZoomRange.end, height: 18, bottom: 32 }
         ],
         grid: { left: '9%', right: '5%', top: 58, bottom: 78, containLabel: true },
         xAxis: {
