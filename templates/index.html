@@ -130,8 +130,6 @@
             transform: translateX(4px);
         }
         
-        .score-chip { display: inline-flex; align-items: center; border-radius: 999px; padding: 0.25rem 0.65rem; font-weight: 600; font-size: 0.75rem; background: linear-gradient(135deg, #ecfeff, #cffafe); color: #0f766e; border: 1px solid #a5f3fc; box-shadow: 0 2px 4px rgba(6,182,212,0.1); }
-        
         .metric-card-title {
             white-space: nowrap;
             display: inline-block;
@@ -156,6 +154,40 @@
                 font-size: 0.75rem;
                 letter-spacing: 0.03em;
             }
+        }
+
+        .date-filter-card {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.625rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.9rem;
+            border: 1px solid rgba(191, 219, 254, 0.9);
+            background: linear-gradient(135deg, rgba(239,246,255,0.95), rgba(224,242,254,0.85));
+            box-shadow: 0 4px 16px -6px rgba(59,130,246,0.18);
+        }
+
+        .date-filter-card label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #2563eb;
+            white-space: nowrap;
+        }
+
+        .date-filter-card input[type="date"] {
+            border: 1px solid rgba(147,197,253,0.8);
+            background: rgba(255,255,255,0.92);
+            color: #334155;
+            border-radius: 0.7rem;
+            padding: 0.5rem 0.75rem;
+            outline: none;
+            font-size: 0.875rem;
+            box-shadow: inset 0 1px 2px rgba(15,23,42,0.04);
+        }
+
+        .date-filter-card input[type="date"]:focus {
+            box-shadow: 0 0 0 3px rgba(96,165,250,0.22);
+            border-color: #60a5fa;
         }
         
         ::-webkit-scrollbar { width:6px; height: 6px; } 
@@ -284,8 +316,12 @@
 
             <div class="glass p-6 rounded-2xl" id="step-chart">
                 <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
-                    <h2 class="text-lg font-bold text-slate-600" data-i18n="chart_title">参数变化趋势 (近2000条数据) </h2>
-                    <div class="flex items-center gap-2" id="step-actions">
+                    <h2 class="text-lg font-bold text-slate-600" data-i18n="chart_title">参数变化趋势与监测视图 </h2>
+                    <div class="flex flex-wrap items-center gap-2" id="step-actions">
+                        <div class="date-filter-card">
+                            <label for="chart-date-filter" data-i18n="date_pick_label">选择日期</label>
+                            <input type="date" id="chart-date-filter" />
+                        </div>
                         <button id="refresh-btn" type="button" class="text-sm bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 text-blue-700 px-3 py-2 rounded-lg border border-blue-200/60 shadow-sm hover:shadow transition-all" data-i18n="refresh_data">更新数据</button>
                         <button id="export-btn" type="button" class="text-sm bg-gradient-to-r from-emerald-50 to-emerald-100 hover:from-emerald-100 hover:to-emerald-200 text-emerald-700 px-3 py-2 rounded-lg border border-emerald-200/60 shadow-sm hover:shadow transition-all" data-i18n="export_data">导出数据</button>
                         <div id="net-latency-box" class="text-sm px-3 py-2 rounded-lg border border-slate-200/80 bg-white/60 backdrop-blur-sm text-slate-600 inline-flex items-center gap-2 shadow-sm">
@@ -294,20 +330,9 @@
                         </div>
                     </div>
                 </div>
-                <div id="date-filter-banner" class="hidden mb-3 flex flex-wrap items-center gap-2 text-xs text-blue-600 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2">
-                    <span id="date-filter-msg" data-i18n="date_filter_active">日期筛选已激活</span>
-                    <span id="date-filter-range" class="font-mono text-blue-700"></span>
-                    <button id="date-clear-btn" type="button" class="ml-auto text-blue-500 hover:text-blue-700 font-medium underline underline-offset-2" data-i18n="date_all">全部</button>
-                </div>
-                <div class="flex flex-wrap items-center gap-2 mb-3">
-                    <label class="text-xs text-slate-500 font-medium" data-i18n="date_from">从</label>
-                    <input type="date" id="date-from" class="border border-slate-200 rounded-lg px-2 py-1 text-xs focus:ring-2 focus:ring-blue-300 outline-none bg-white/70 shadow-sm">
-                    <label class="text-xs text-slate-500 font-medium" data-i18n="date_to">至</label>
-                    <input type="date" id="date-to" class="border border-slate-200 rounded-lg px-2 py-1 text-xs focus:ring-2 focus:ring-blue-300 outline-none bg-white/70 shadow-sm">
-                </div>
                 <div class="grid grid-cols-1 xl:grid-cols-[248px_1fr] gap-4">
                     <div class="space-y-2 flex flex-col" id="trend-tabs">
-                        <button class="trend-tab active" data-trend="overview" data-i18n="trend_all">总览趋势图</button>
+                        <button class="trend-tab active" data-trend="overview" data-i18n="trend_all">系统评分趋势</button>
                         <button class="trend-tab" data-trend="cond" data-i18n="trend_cond">电导率趋势</button>
                         <button class="trend-tab" data-trend="ph" data-i18n="trend_ph">PH值趋势</button>
                         <button class="trend-tab" data-trend="turbidity" data-i18n="trend_turbidity">浊度趋势</button>
