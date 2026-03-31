@@ -17,6 +17,10 @@ const i18n = {
         date_all: "全部",
         date_filter_active: "日期筛选已激活",
         chart_title: "参数变化趋势与监测视图",
+        date_from: "从",
+        date_to: "至",
+        date_all: "全部",
+        date_filter_active: "日期筛选已激活",
         card_ph: "PH值",
         card_cond: "电导率（ms/cm）",
         card_level: "液位（%）",
@@ -122,16 +126,7 @@ const i18n = {
         tip_level: "储水池液位百分比 (0-100%)",
         tip_f1: "轻污染入水流量监测",
         tip_f2: "重污染入水流量监测",
-        no_data_label: "暂无数据",
-        table_date_filter_label: "选择日期",
-        table_no_data_for_date: "该日期无数据",
-        table_time: "时间",
-        table_f1: "入水流量（轻）",
-        table_cond: "电导率",
-        table_ph: "PH值",
-        table_level: "液位",
-        table_turbidity: "浊度",
-        table_f2: "入水流量（重）"
+        no_data_label: "暂无数据"
     },
     en: {
         title: "Smart Greywater Monitoring",
@@ -142,6 +137,10 @@ const i18n = {
         date_all: "All",
         date_filter_active: "Date filter active",
         chart_title: "Trend Monitoring & Visualization",
+        date_from: "From",
+        date_to: "To",
+        date_all: "All",
+        date_filter_active: "Date filter active",
         card_ph: "PH",
         card_cond: "Conductivity (mS/cm)",
         card_level: "Water Level (%)",
@@ -247,16 +246,7 @@ const i18n = {
         tip_level: "Storage tank level percentage (0-100%)",
         tip_f1: "Light-pollution inflow monitoring",
         tip_f2: "Heavy-pollution inflow monitoring",
-        no_data_label: "No data available",
-        table_date_filter_label: "Select Date",
-        table_no_data_for_date: "No data for the selected date",
-        table_time: "Time",
-        table_f1: "Inflow (Light)",
-        table_cond: "Conductivity",
-        table_ph: "PH",
-        table_level: "Water Level",
-        table_turbidity: "Turbidity",
-        table_f2: "Inflow (Heavy)"
+        no_data_label: "No data available"
     }
 };
 
@@ -265,68 +255,68 @@ let currentLang = 'zh';
 // Modal configs with full bilingual support
 const modalConfigs = {
     ph: {
-        title: { zh: "pH值详细说明", en: "pH Detail" },
-        desc: { zh: "pH值是衡量水体酸碱度的重要指标。对于灰水处理，pH值直接影响微生物活性及后续处理工艺。", en: "pH is a crucial indicator of water acidity/alkalinity, directly affecting microbial activity in greywater treatment." },
+        title: {zh: "pH值详细说明", en: "pH Detail"},
+        desc: {zh: "pH值是衡量水体酸碱度的重要指标。对于灰水处理，pH值直接影响微生物活性及后续处理工艺。", en: "pH is a crucial indicator of water acidity/alkalinity, directly affecting microbial activity in greywater treatment."},
         ranges: [
-            { color: "green", condition: { zh: "6.0 - 9.0", en: "6.0 - 9.0" }, desc: { zh: "正常范围，符合国家排放标准。", en: "Normal range, meets discharge standards." } },
-            { color: "yellow", condition: { zh: "5.5-6.0 或 9.0-9.5", en: "5.5-6.0 or 9.0-9.5" }, desc: { zh: "轻微偏离，需关注进水水质变化。", en: "Slight deviation, monitor influent quality." } },
-            { color: "red", condition: { zh: "< 5.5 或 > 9.5", en: "< 5.5 or > 9.5" }, desc: { zh: "严重异常，可能损害处理设备。", en: "Severe anomaly, may damage equipment." } }
+            {color: "green", condition: {zh: "6.0 - 9.0", en: "6.0 - 9.0"}, desc: {zh: "正常范围，符合国家排放标准。", en: "Normal range, meets discharge standards."}},
+            {color: "yellow", condition: {zh: "5.5-6.0 或 9.0-9.5", en: "5.5-6.0 or 9.0-9.5"}, desc: {zh: "轻微偏离，需关注进水水质变化。", en: "Slight deviation, monitor influent quality."}},
+            {color: "red", condition: {zh: "< 5.5 或 > 9.5", en: "< 5.5 or > 9.5"}, desc: {zh: "严重异常，可能损害处理设备。", en: "Severe anomaly, may damage equipment."}}
         ]
     },
     cond: {
-        title: { zh: "电导率详细说明（ms/cm）", en: "Conductivity Detail (ms/cm)" },
-        desc: { zh: "电导率反映水中溶解性总固体的浓度（单位：ms/cm）。过高的电导率可能导致管道结垢。", en: "Conductivity reflects dissolved total solids concentration (unit: ms/cm). High values may cause pipe scaling." },
+        title: {zh: "电导率详细说明（ms/cm）", en: "Conductivity Detail (ms/cm)"},
+        desc: {zh: "电导率反映水中溶解性总固体的浓度（单位：ms/cm）。过高的电导率可能导致管道结垢。", en: "Conductivity reflects dissolved total solids concentration (unit: ms/cm). High values may cause pipe scaling."},
         ranges: [
-            { color: "green", condition: { zh: "≤ 0.5（ms/cm）", en: "≤ 0.5（ms/cm）" }, desc: { zh: "水质良好，溶解盐分低。", en: "Good quality, low dissolved salts." } },
-            { color: "yellow", condition: { zh: "0.5（ms/cm） - 1（ms/cm）", en: "0.5（ms/cm） - 1（ms/cm）" }, desc: { zh: "电导率偏高，属正常灰水波动。", en: "Slightly high, within normal fluctuation." } },
-            { color: "red", condition: { zh: "> 1（ms/cm）", en: "> 1（ms/cm）" }, desc: { zh: "电导率过高，存在结垢风险。", en: "Too high, risk of scaling." } }
+            {color: "green", condition: {zh: "≤ 0.5（ms/cm）", en: "≤ 0.5（ms/cm）"}, desc: {zh: "水质良好，溶解盐分低。", en: "Good quality, low dissolved salts."}},
+            {color: "yellow", condition: {zh: "0.5（ms/cm） - 1（ms/cm）", en: "0.5（ms/cm） - 1（ms/cm）"}, desc: {zh: "电导率偏高，属正常灰水波动。", en: "Slightly high, within normal fluctuation."}},
+            {color: "red", condition: {zh: "> 1（ms/cm）", en: "> 1（ms/cm）"}, desc: {zh: "电导率过高，存在结垢风险。", en: "Too high, risk of scaling."}}
         ]
     },
     level: {
-        title: { zh: "液位详细说明", en: "Water Level Detail" },
-        desc: { zh: "液位表示储水池当前水量百分比，用于控制水泵启停，防止溢流或空转。", en: "Water level indicates tank percentage, controlling pump start/stop to prevent overflow or dry running." },
+        title: {zh: "液位详细说明", en: "Water Level Detail"},
+        desc: {zh: "液位表示储水池当前水量百分比，用于控制水泵启停，防止溢流或空转。", en: "Water level indicates tank percentage, controlling pump start/stop to prevent overflow or dry running."},
         ranges: [
-            { color: "red", condition: { zh: "< 5%", en: "< 5%" }, desc: { zh: "液位过低，可能导致水泵空转。", en: "Too low, may cause pump dry running." } },
-            { color: "green", condition: { zh: "5% - 95%", en: "5% - 95%" }, desc: { zh: "正常运行水位区间。", en: "Normal operating range." } },
-            { color: "red", condition: { zh: "> 95%", en: "> 95%" }, desc: { zh: "液位接近上限，存在溢流风险。", en: "Near upper limit, overflow risk." } }
+            {color: "red", condition: {zh: "< 5%", en: "< 5%"}, desc: {zh: "液位过低，可能导致水泵空转。", en: "Too low, may cause pump dry running."}},
+            {color: "green", condition: {zh: "5% - 95%", en: "5% - 95%"}, desc: {zh: "正常运行水位区间。", en: "Normal operating range."}},
+            {color: "red", condition: {zh: "> 95%", en: "> 95%"}, desc: {zh: "液位接近上限，存在溢流风险。", en: "Near upper limit, overflow risk."}}
         ]
     },
     f1: {
-        title: { zh: "入水流量（轻污染）详细说明", en: "Inflow (Light Pollution) Detail" },
-        desc: { zh: "用于监测轻污染来水瞬时流量（L/min），帮助判断前端来水是否稳定。", en: "Monitors instant inflow of light-pollution stream (L/min) to evaluate influent stability." },
+        title: {zh: "入水流量（轻污染）详细说明", en: "Inflow (Light Pollution) Detail"},
+        desc: {zh: "用于监测轻污染来水瞬时流量（L/min），帮助判断前端来水是否稳定。", en: "Monitors instant inflow of light-pollution stream (L/min) to evaluate influent stability."},
         ranges: [
-            { color: "green", condition: { zh: "2.0 - 4.8（L/min）", en: "2.0 - 4.8 (L/min)" }, desc: { zh: "供水稳定，系统负荷匹配。", en: "Stable supply with matched system load." } },
-            { color: "yellow", condition: { zh: "0-1.1 或 5.2-6.0（L/min）", en: "0-1.1 or 5.2-6.0 (L/min)" }, desc: { zh: "偏离目标区间，建议检查阀门与来水波动。", en: "Off target range; check valve state and influent fluctuation." } },
-            { color: "red", condition: { zh: "1.2 - 1.9（L/min）", en: "1.2 - 1.9 (L/min)" }, desc: { zh: "异常工况区，建议立即排查传感器与管路。", en: "Abnormal operating band; inspect sensor and pipeline immediately." } }
+            {color: "green", condition: {zh: "2.0 - 4.8（L/min）", en: "2.0 - 4.8 (L/min)"}, desc: {zh: "供水稳定，系统负荷匹配。", en: "Stable supply with matched system load."}},
+            {color: "yellow", condition: {zh: "0-1.1 或 5.2-6.0（L/min）", en: "0-1.1 or 5.2-6.0 (L/min)"}, desc: {zh: "偏离目标区间，建议检查阀门与来水波动。", en: "Off target range; check valve state and influent fluctuation."}},
+            {color: "red", condition: {zh: "1.2 - 1.9（L/min）", en: "1.2 - 1.9 (L/min)"}, desc: {zh: "异常工况区，建议立即排查传感器与管路。", en: "Abnormal operating band; inspect sensor and pipeline immediately."}}
         ]
     },
     turbidity: {
-        title: { zh: "浊度详细说明", en: "Turbidity Detail" },
-        desc: { zh: "浊度（NTU）用于反映悬浮颗粒与胶体物含量，数值越高表示水体越浑浊。", en: "Turbidity (NTU) indicates suspended particles and colloids; higher values mean cloudier water." },
+        title: {zh: "浊度详细说明", en: "Turbidity Detail"},
+        desc: {zh: "浊度（NTU）用于反映悬浮颗粒与胶体物含量，数值越高表示水体越浑浊。", en: "Turbidity (NTU) indicates suspended particles and colloids; higher values mean cloudier water."},
         ranges: [
-            { color: "green", condition: { zh: "≤ 1", en: "≤ 1" }, desc: { zh: "水体清澈，处理效果稳定。", en: "Water is clear and treatment performance is stable." } },
-            { color: "yellow", condition: { zh: "1 - 5", en: "1 - 5" }, desc: { zh: "颗粒物增加，建议关注过滤单元状态。", en: "Particle load rises; check filtration unit status." } },
-            { color: "red", condition: { zh: "> 5", en: "> 5" }, desc: { zh: "浑浊度偏高，建议执行排查与强化处理。", en: "High turbidity; perform troubleshooting and enhanced treatment." } }
+            {color: "green", condition: {zh: "≤ 1", en: "≤ 1"}, desc: {zh: "水体清澈，处理效果稳定。", en: "Water is clear and treatment performance is stable."}},
+            {color: "yellow", condition: {zh: "1 - 5", en: "1 - 5"}, desc: {zh: "颗粒物增加，建议关注过滤单元状态。", en: "Particle load rises; check filtration unit status."}},
+            {color: "red", condition: {zh: "> 5", en: "> 5"}, desc: {zh: "浑浊度偏高，建议执行排查与强化处理。", en: "High turbidity; perform troubleshooting and enhanced treatment."}}
         ]
     },
     f2: {
-        title: { zh: "入水流量（重污染）详细说明", en: "Inflow (Heavy Pollution) Detail" },
-        desc: { zh: "用于监测重污染来水瞬时流量（L/min），便于及时识别高负荷冲击。", en: "Monitors instant inflow of heavy-pollution stream (L/min) for high-load shock detection." },
+        title: {zh: "入水流量（重污染）详细说明", en: "Inflow (Heavy Pollution) Detail"},
+        desc: {zh: "用于监测重污染来水瞬时流量（L/min），便于及时识别高负荷冲击。", en: "Monitors instant inflow of heavy-pollution stream (L/min) for high-load shock detection."},
         ranges: [
-            { color: "green", condition: { zh: "2.0 - 4.8（L/min）", en: "2.0 - 4.8 (L/min)" }, desc: { zh: "运行平稳，可维持既定处理节奏。", en: "Stable operation and controllable treatment rhythm." } },
-            { color: "yellow", condition: { zh: "0-1.1 或 5.2-6.0（L/min）", en: "0-1.1 or 5.2-6.0 (L/min)" }, desc: { zh: "负荷出现波动，建议预警并持续观察。", en: "Load fluctuates; trigger warning and continue observation." } },
-            { color: "red", condition: { zh: "1.2 - 1.9（L/min）", en: "1.2 - 1.9 (L/min)" }, desc: { zh: "疑似异常流态，建议立即核查提升泵与阀组。", en: "Potential abnormal flow pattern; inspect lift pump and valve group now." } }
+            {color: "green", condition: {zh: "2.0 - 4.8（L/min）", en: "2.0 - 4.8 (L/min)"}, desc: {zh: "运行平稳，可维持既定处理节奏。", en: "Stable operation and controllable treatment rhythm."}},
+            {color: "yellow", condition: {zh: "0-1.1 或 5.2-6.0（L/min）", en: "0-1.1 or 5.2-6.0 (L/min)"}, desc: {zh: "负荷出现波动，建议预警并持续观察。", en: "Load fluctuates; trigger warning and continue observation."}},
+            {color: "red", condition: {zh: "1.2 - 1.9（L/min）", en: "1.2 - 1.9 (L/min)"}, desc: {zh: "疑似异常流态，建议立即核查提升泵与阀组。", en: "Potential abnormal flow pattern; inspect lift pump and valve group now."}}
         ]
     },
     quality: {
-        title: { zh: "综合水质评级标准", en: "Water Quality Grading Standard" },
-        desc: { zh: "综合评分 = 电导率×40% + pH×35% + 浊度×25%（分项得分按区间折算后加权，总分取整）。以下为分级用途说明。", en: "Overall score = Conductivity×40% + pH×35% + Turbidity×25% (sub-scores from bands, then weighted; total is floored). Categories below describe intended reuse." },
+        title: {zh: "综合水质评级标准", en: "Water Quality Grading Standard"},
+        desc: {zh: "综合评分 = 电导率×40% + pH×35% + 浊度×25%（分项得分按区间折算后加权，总分取整）。以下为分级用途说明。", en: "Overall score = Conductivity×40% + pH×35% + Turbidity×25% (sub-scores from bands, then weighted; total is floored). Categories below describe intended reuse."},
         ranges: [
-            { color: "green", condition: { zh: "90-100：绿化灌溉优质回用水", en: "90-100: Premium greening irrigation reuse" }, desc: { zh: "满足高标准绿化与灌溉用水需求。", en: "Meets high-standard landscaping and irrigation needs." } },
-            { color: "green", condition: { zh: "75-89：绿化灌溉回用水", en: "75-89: Greening irrigation reuse" }, desc: { zh: "适用于绿化灌溉与景观补水等非饮用场景。", en: "Suitable for landscaping and scenic replenishment (non-potable)." } },
-            { color: "yellow", condition: { zh: "60-74：杂用回用水", en: "60-74: Miscellaneous reuse" }, desc: { zh: "可用于冲厕、道路清洁等城镇杂用。", en: "Toilet flushing, road cleaning, and similar municipal reuse." } },
-            { color: "red", condition: { zh: "45-59：受限回用水", en: "45-59: Restricted reuse" }, desc: { zh: "仅建议在受控场景下回用。", en: "Controlled scenarios only." } },
-            { color: "red", condition: { zh: "0-44：待处理水", en: "0-44: Pending treatment" }, desc: { zh: "需继续处理后再使用。", en: "Further treatment before use." } }
+            {color: "green", condition: {zh: "90-100：绿化灌溉优质回用水", en: "90-100: Premium greening irrigation reuse"}, desc: {zh: "满足高标准绿化与灌溉用水需求。", en: "Meets high-standard landscaping and irrigation needs."}},
+            {color: "green", condition: {zh: "75-89：绿化灌溉回用水", en: "75-89: Greening irrigation reuse"}, desc: {zh: "适用于绿化灌溉与景观补水等非饮用场景。", en: "Suitable for landscaping and scenic replenishment (non-potable)."}},
+            {color: "yellow", condition: {zh: "60-74：杂用回用水", en: "60-74: Miscellaneous reuse"}, desc: {zh: "可用于冲厕、道路清洁等非接触杂用。", en: "Toilet flushing, road cleaning, and similar municipal reuse."}},
+            {color: "red", condition: {zh: "45-59：受限回用水", en: "45-59: Restricted reuse"}, desc: {zh: "仅建议在受控场景下回用。", en: "Controlled scenarios only."}},
+            {color: "red", condition: {zh: "0-44：待处理水", en: "0-44: Pending treatment"}, desc: {zh: "需继续处理后再使用。", en: "Further treatment before use."}}
         ]
     }
 };
@@ -339,9 +329,6 @@ let chartResizeBound = false;
 let latestLatencyMs = null;
 let latestLatencyStatus = 'gray';
 
-let latestFeedsCache = [];
-let selectedTableDate = '';
-
 const metricMeta = {
     f1: { field: 'field1', legendKey: 'legend_f1', axis: 'axis_flow', color: '#2563eb' },
     cond: { field: 'field2', legendKey: 'legend_cond', axis: 'axis_cond', color: '#16a34a' },
@@ -351,7 +338,6 @@ const metricMeta = {
     f2: { field: 'field6', legendKey: 'legend_f2', axis: 'axis_flow', color: '#f97316' }
 };
 
-// Status evaluation for colored dots
 function getPhStatus(v) {
     if (v === null) return 'gray';
     if (v >= 6.0 && v <= 9.0) return 'green';
@@ -383,12 +369,11 @@ function getFlowStatus(v) {
 }
 
 function setDot(id, status) {
-    const el = document.getElementById(id);
+    const el = document.getElementByById(id);
     if (!el) return;
     el.className = 'status-dot ' + status;
 }
 
-// Init tooltips
 function initTooltips() {
     const tips = {
         'tip_ph': i18n[currentLang].tip_ph,
@@ -406,7 +391,6 @@ function initTooltips() {
     tippy('.info-icon', { placement: 'top', animation: 'scale', theme: 'light-border' });
 }
 
-// A/B + Language + Init
 document.addEventListener('DOMContentLoaded', () => {
     const btn = document.querySelector('.ab-btn');
     if (btn && abVariant === 'A') {
@@ -422,7 +406,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     document.documentElement.lang = currentLang === 'zh' ? 'zh-CN' : 'en';
 
-    document.getElementById('lang-switch')?.addEventListener('change', (e) => {
+    document.getElementById('lang-switch').addEventListener('change', (e) => {
         currentLang = e.target.value;
         localStorage.setItem('lang', currentLang);
         document.documentElement.lang = currentLang === 'zh' ? 'zh-CN' : 'en';
@@ -431,50 +415,46 @@ document.addEventListener('DOMContentLoaded', () => {
             updateStatusDots(latestDataCache);
             updateClassification(latestDataCache);
             updateChart();
-            renderDataTable(latestFeedsCache);
         }
     });
 
-    document.getElementById('guide-btn')?.addEventListener('click', startGuide);
-
+    document.getElementById('guide-btn').addEventListener('click', startGuide);
     const refreshBtn = document.getElementById('refresh-btn');
     if (refreshBtn) {
         refreshBtn.addEventListener('click', refreshData);
     }
-
     const exportBtn = document.getElementById('export-btn');
     if (exportBtn) {
         exportBtn.addEventListener('click', exportData);
     }
-
     const cfgSaveBtn = document.getElementById('cfg-save-btn');
     if (cfgSaveBtn) {
         cfgSaveBtn.addEventListener('click', saveRuntimeConfig);
     }
-
     const cfgCloseBtn = document.getElementById('cfg-close-btn');
     if (cfgCloseBtn) {
         cfgCloseBtn.addEventListener('click', () => setConfigPanelVisible(false));
     }
-
     const cfgOpenBtn = document.getElementById('cfg-toggle-open');
     if (cfgOpenBtn) {
         cfgOpenBtn.addEventListener('click', () => setConfigPanelVisible(true));
     }
 
-    // Chart date filter
+    // Date filter
     const dateFromInput = document.getElementById('date-from');
     const dateToInput = document.getElementById('date-to');
     const dateClearBtn = document.getElementById('date-clear-btn');
     if (dateFromInput) {
         dateFromInput.addEventListener('change', () => {
             dateFrom = dateFromInput.value ? new Date(dateFromInput.value).getTime() : null;
+            updateDateFilterBanner();
             updateChart();
         });
     }
     if (dateToInput) {
         dateToInput.addEventListener('change', () => {
             dateTo = dateToInput.value ? new Date(dateToInput.value).getTime() : null;
+            updateDateFilterBanner();
             updateChart();
         });
     }
@@ -484,16 +464,8 @@ document.addEventListener('DOMContentLoaded', () => {
             dateTo = null;
             if (dateFromInput) dateFromInput.value = '';
             if (dateToInput) dateToInput.value = '';
+            updateDateFilterBanner();
             updateChart();
-        });
-    }
-
-    // Table date filter
-    const tableDateInput = document.getElementById('table-date-filter');
-    if (tableDateInput) {
-        tableDateInput.addEventListener('change', (e) => {
-            selectedTableDate = e.target.value || '';
-            renderDataTable(latestFeedsCache);
         });
     }
 
@@ -550,12 +522,6 @@ function updateTranslations() {
 
     const greetingEl = document.querySelector('#chat-messages [data-i18n="ai_greeting"]');
     if (greetingEl) greetingEl.textContent = T('ai_greeting');
-
-    const tableEmpty = document.getElementById('data-table-empty');
-    if (tableEmpty && tableEmpty.dataset.emptyState === '1') {
-        tableEmpty.textContent = T('table_no_data_for_date');
-    }
-
     updateTrendTabs();
     initTooltips();
     updateLatencyIndicator();
@@ -602,23 +568,6 @@ function formatValue(v, digits = 2) {
     return v === null ? '--' : Number(v).toFixed(digits);
 }
 
-function formatDateOnly(dateStr) {
-    if (!dateStr) return '';
-    const d = new Date(dateStr);
-    if (isNaN(d.getTime())) return '';
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
-}
-
-function formatDateTime(dateStr) {
-    if (!dateStr) return '--';
-    const d = new Date(dateStr);
-    if (isNaN(d.getTime())) return '--';
-    return d.toLocaleString();
-}
-
 function getLatencyStatus(ms) {
     if (ms === null) return 'red';
     if (ms <= 150) return 'green';
@@ -661,7 +610,6 @@ async function measureNetworkLatency() {
     updateLatencyIndicator();
 }
 
-// Modal
 function openModal(type) {
     const config = modalConfigs[type];
     if (!config) return;
@@ -673,17 +621,16 @@ function openModal(type) {
     rangesContainer.innerHTML = '';
     config.ranges.forEach(r => {
         const bg = r.color === 'green' ? 'bg-green-50 border-green-200' :
-            r.color === 'yellow' ? 'bg-yellow-50 border-yellow-200' : 'bg-red-50 border-red-200';
+                   r.color === 'yellow' ? 'bg-yellow-50 border-yellow-200' : 'bg-red-50 border-red-200';
         const dot = r.color === 'green' ? 'green' : r.color === 'yellow' ? 'yellow' : 'red';
         const tc = r.color === 'green' ? 'text-green-700' :
-            r.color === 'yellow' ? 'text-yellow-700' : 'text-red-700';
+                   r.color === 'yellow' ? 'text-yellow-700' : 'text-red-700';
         rangesContainer.innerHTML += `
             <div class="flex items-center gap-3 p-3 rounded-xl border ${bg}">
                 <span class="status-dot ${dot}"></span>
                 <div><span class="font-bold ${tc}">${r.condition[currentLang]}</span> <span class="text-sm text-gray-600">${r.desc[currentLang]}</span></div>
             </div>`;
     });
-
     const scoreDetailsEl = document.getElementById('modal-score-details');
     if (scoreDetailsEl) {
         if (type === 'quality' && latestClassification) {
@@ -707,10 +654,26 @@ function closeModal() {
     document.getElementById('detail-modal').classList.remove('active');
 }
 
-// Data
 let allFeeds = [];
 let dateFrom = null;
 let dateTo = null;
+
+function updateDateFilterBanner() {
+    const banner = document.getElementById('date-filter-banner');
+    const rangeEl = document.getElementById('date-filter-range');
+    if (!banner) return;
+    const hasFilter = dateFrom || dateTo;
+    banner.classList.toggle('hidden', !hasFilter);
+    if (hasFilter && rangeEl) {
+        const fmt = (ts) => {
+            const d = new Date(ts);
+            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        };
+        const fromText = dateFrom ? fmt(dateFrom) : '--';
+        const toText = dateTo ? fmt(dateTo) : '--';
+        rangeEl.textContent = `${T('date_from')}: ${fromText}  ${T('date_to')}: ${toText}`;
+    }
+}
 
 async function fetchData() {
     try {
@@ -720,9 +683,6 @@ async function fetchData() {
             allFeeds = data.feeds.filter(f => (
                 f.score !== undefined && f.score !== null
             ) || f.field1 || f.field2 || f.field3 || f.field4 || f.field5 || f.field6);
-
-            latestFeedsCache = allFeeds.slice();
-
             if (allFeeds.length > 0) {
                 const latest = allFeeds[allFeeds.length - 1];
                 latestDataCache = latest;
@@ -732,15 +692,11 @@ async function fetchData() {
             }
         } else {
             allFeeds = [];
-            latestFeedsCache = [];
         }
     } catch (e) {
         console.error("Data load failed", e);
-        allFeeds = [];
-        latestFeedsCache = [];
     } finally {
         updateChart();
-        renderDataTable(latestFeedsCache);
         await measureNetworkLatency();
     }
 }
@@ -759,11 +715,9 @@ async function refreshData() {
 }
 
 function exportData() {
-    const exportFeeds = getFilteredFeeds();
-    if (!exportFeeds.length) return;
-
+    if (!allFeeds.length) return;
     const header = ['created_at', 'inflow_light', 'conductivity', 'ph', 'waterlevel', 'turbidity', 'inflow_heavy', 'system_score'];
-    const rows = exportFeeds.map(f => [
+    const rows = allFeeds.map(f => [
         f.created_at || '',
         f.field1 ?? '',
         f.field2 ?? '',
@@ -856,7 +810,6 @@ function updateCards(latest) {
     };
     for (let id in map) {
         const el = document.getElementById(id);
-        if (!el) continue;
         el.classList.remove('skeleton');
         el.textContent = formatValue(safeNum(map[id]), 2);
     }
@@ -870,12 +823,12 @@ function updateStatusDots(latest) {
     const turbidity = safeNum(latest.field5);
     const f2 = safeNum(latest.field6);
 
-    setDot('dot-cond', getCondStatus(cond));
-    setDot('dot-ph', getPhStatus(ph));
-    setDot('dot-level', getLevelStatus(level));
-    setDot('dot-turbidity', getTurbidityStatus(turbidity));
-    setDot('dot-f1', getFlowStatus(f1));
-    setDot('dot-f2', getFlowStatus(f2));
+    setDot('range-dot-cond', getCondStatus(cond));
+    setDot('range-dot-ph', getPhStatus(ph));
+    setDot('range-dot-level', getLevelStatus(level));
+    setDot('range-dot-turbidity', getTurbidityStatus(turbidity));
+    setDot('range-dot-f1', getFlowStatus(f1));
+    setDot('range-dot-f2', getFlowStatus(f2));
 
     const condStatus = getCondStatus(cond);
     const phStatus = getPhStatus(ph);
@@ -884,32 +837,12 @@ function updateStatusDots(latest) {
     const flow1Status = getFlowStatus(f1);
     const flow2Status = getFlowStatus(f2);
 
-    setDot('range-dot-cond', condStatus);
-    setDot('range-dot-ph', phStatus);
-    setDot('range-dot-level', levelStatus);
-    setDot('range-dot-turbidity', turbidityStatus);
-    setDot('range-dot-f1', flow1Status);
-    setDot('range-dot-f2', flow2Status);
-
-    const condRange = condStatus === 'green' ? T('range_cond_green') : condStatus === 'yellow' ? T('range_cond_yellow') : condStatus === 'red' ? T('range_cond_red') : T('range_unknown');
-    const phRange = phStatus === 'green' ? T('range_ph_green') : phStatus === 'yellow' ? T('range_ph_yellow') : phStatus === 'red' ? T('range_ph_red') : T('range_unknown');
-    const levelRange = levelStatus === 'green' ? T('range_level_green') : levelStatus === 'red' ? T('range_level_red') : T('range_unknown');
-    const turbidityRange = turbidityStatus === 'green' ? T('range_turbidity_green') : turbidityStatus === 'yellow' ? T('range_turbidity_yellow') : turbidityStatus === 'red' ? T('range_turbidity_red') : T('range_unknown');
-    const flow1Range = flow1Status === 'green' ? T('range_flow_green') : flow1Status === 'yellow' ? T('range_flow_yellow') : flow1Status === 'red' ? T('range_flow_red') : T('range_unknown');
-    const flow2Range = flow2Status === 'green' ? T('range_flow_green') : flow2Status === 'yellow' ? T('range_flow_yellow') : flow2Status === 'red' ? T('range_flow_red') : T('range_unknown');
-
-    const ids = {
-        'range-cond': condRange,
-        'range-ph': phRange,
-        'range-level': levelRange,
-        'range-turbidity': turbidityRange,
-        'range-f1': flow1Range,
-        'range-f2': flow2Range
-    };
-    Object.entries(ids).forEach(([id, text]) => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = text;
-    });
+    document.getElementById('range-cond').textContent = condStatus === 'green' ? T('range_cond_green') : condStatus === 'yellow' ? T('range_cond_yellow') : condStatus === 'red' ? T('range_cond_red') : T('range_unknown');
+    document.getElementById('range-ph').textContent = phStatus === 'green' ? T('range_ph_green') : phStatus === 'yellow' ? T('range_ph_yellow') : phStatus === 'red' ? T('range_ph_red') : T('range_unknown');
+    document.getElementById('range-level').textContent = levelStatus === 'green' ? T('range_level_green') : levelStatus === 'red' ? T('range_level_red') : T('range_unknown');
+    document.getElementById('range-turbidity').textContent = turbidityStatus === 'green' ? T('range_turbidity_green') : turbidityStatus === 'yellow' ? T('range_turbidity_yellow') : turbidityStatus === 'red' ? T('range_turbidity_red') : T('range_unknown');
+    document.getElementById('range-f1').textContent = flow1Status === 'green' ? T('range_flow_green') : flow1Status === 'yellow' ? T('range_flow_yellow') : flow1Status === 'red' ? T('range_flow_red') : T('range_unknown');
+    document.getElementById('range-f2').textContent = flow2Status === 'green' ? T('range_flow_green') : flow2Status === 'yellow' ? T('range_flow_yellow') : flow2Status === 'red' ? T('range_flow_red') : T('range_unknown');
 }
 
 async function updateClassification(latest) {
@@ -929,17 +862,13 @@ async function updateClassification(latest) {
         latestClassification = c;
 
         const gradeEl = document.getElementById('quality-grade');
-        if (gradeEl) {
-            gradeEl.classList.remove('skeleton');
-            gradeEl.textContent = c.grade;
-            gradeEl.style.backgroundColor = c.color;
-        }
+        gradeEl.classList.remove('skeleton');
+        gradeEl.textContent = c.grade;
+        gradeEl.style.backgroundColor = c.color;
 
         const scoreEl = document.getElementById('quality-score');
-        if (scoreEl) {
-            scoreEl.classList.remove('skeleton', 'w-40', 'h-6');
-            scoreEl.textContent = `${T('sys_score')}${c.score}`;
-        }
+        scoreEl.classList.remove('skeleton', 'w-40', 'h-6');
+        scoreEl.textContent = `${T('sys_score')}${c.score}`;
 
         const usageDetailEl = document.getElementById('quality-usage-detail');
         if (usageDetailEl) {
@@ -947,10 +876,8 @@ async function updateClassification(latest) {
         }
 
         const reasonEl = document.getElementById('quality-reason');
-        if (reasonEl) {
-            reasonEl.classList.remove('skeleton', 'min-h-[1.25rem]');
-            reasonEl.textContent = buildExtendedReason(latest, c.reason || '');
-        }
+        reasonEl.classList.remove('skeleton', 'min-h-[1.25rem]');
+        reasonEl.textContent = buildExtendedReason(latest, c.reason || '');
     } catch (e) {
         console.error(e);
     }
@@ -1021,7 +948,7 @@ function getFilteredFeeds() {
     if (!dateFrom && !dateTo) return allFeeds;
     return allFeeds.filter(f => {
         const d = new Date(f.created_at);
-        if (isNaN(d.getTime())) return false;
+        if (isNaN(d)) return false;
         const ts = d.getTime();
         if (dateFrom && ts < dateFrom) return false;
         if (dateTo) {
@@ -1030,65 +957,6 @@ function getFilteredFeeds() {
             if (ts > endOfDay.getTime()) return false;
         }
         return true;
-    });
-}
-
-function getFilteredTableData(feeds) {
-    if (!Array.isArray(feeds)) return [];
-    if (!selectedTableDate) return feeds;
-    return feeds.filter(item => formatDateOnly(item.created_at) === selectedTableDate);
-}
-
-function renderDataTable(feeds) {
-    const tableBody = document.getElementById('data-table-body');
-    const tableEmpty = document.getElementById('data-table-empty');
-    if (!tableBody) return;
-
-    const filtered = getFilteredTableData(feeds);
-    tableBody.innerHTML = '';
-
-    if (tableEmpty) {
-        tableEmpty.style.display = 'none';
-        tableEmpty.textContent = '';
-        tableEmpty.dataset.emptyState = '0';
-    }
-
-    if (!filtered.length) {
-        if (tableEmpty) {
-            tableEmpty.textContent = T('table_no_data_for_date');
-            tableEmpty.style.display = 'block';
-            tableEmpty.dataset.emptyState = '1';
-        } else {
-            tableBody.innerHTML = `
-                <tr>
-                    <td colspan="7" style="text-align:center;padding:16px;color:#64748b;">
-                        ${T('table_no_data_for_date')}
-                    </td>
-                </tr>
-            `;
-        }
-        return;
-    }
-
-    filtered.forEach(item => {
-        const tr = document.createElement('tr');
-        const f1 = safeNum(item.field1);
-        const cond = toMsCm(safeNum(item.field2));
-        const ph = safeNum(item.field3);
-        const level = safeNum(item.field4);
-        const turbidity = safeNum(item.field5);
-        const f2 = safeNum(item.field6);
-
-        tr.innerHTML = `
-            <td>${formatDateTime(item.created_at)}</td>
-            <td>${formatValue(f1)}</td>
-            <td>${formatValue(cond)}</td>
-            <td>${formatValue(ph)}</td>
-            <td>${formatValue(level)}</td>
-            <td>${formatValue(turbidity)}</td>
-            <td>${formatValue(f2)}</td>
-        `;
-        tableBody.appendChild(tr);
     });
 }
 
@@ -1113,8 +981,7 @@ function updateChart() {
         chart.setOption({
             title: {
                 text: T('no_data_label'),
-                left: 'center',
-                top: 'middle',
+                left: 'center', top: 'middle',
                 textStyle: { fontSize: 16, color: '#94a3b8', fontWeight: 400 }
             },
             xAxis: { show: false },
@@ -1164,15 +1031,6 @@ function getSingleAxisRange(key, values) {
     if (key === 'level') return { min: 0, max: 100 };
     if (key === 'cond') return { min: 0, max: 20 };
     return { min: 0, max: 6 };
-}
-
-function normalizeSeries(values) {
-    const valid = values.filter(v => v !== null);
-    if (valid.length === 0) return values.map(() => null);
-    const min = Math.min(...valid);
-    const max = Math.max(...valid);
-    if (max === min) return values.map(v => (v === null ? null : 50));
-    return values.map(v => (v === null ? null : Number((((v - min) / (max - min)) * 100).toFixed(2))));
 }
 
 function calcQualityScoreFromFeed(feed) {
@@ -1316,7 +1174,6 @@ function buildSingleOption(key, feeds) {
     };
 }
 
-// AI Chat
 const chatBox = document.getElementById('chat-messages');
 const aiInput = document.getElementById('ai-input');
 const aiSendBtn = document.getElementById('ai-send');
@@ -1372,10 +1229,10 @@ if (aiSendBtn && aiInput && chatBox) {
                 body: JSON.stringify({ question: q, context: buildContext(), lang: currentLang })
             });
             const data = await res.json();
-            document.getElementById(loadingId)?.remove();
+            document.getElementById(loadingId).remove();
             appendChat('ai', data.answer || data.error || T('no_reply'));
         } catch (e) {
-            document.getElementById(loadingId)?.remove();
+            document.getElementById(loadingId).remove();
             appendChat('ai', T('net_error'));
         }
     });
