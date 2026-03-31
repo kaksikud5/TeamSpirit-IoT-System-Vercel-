@@ -234,6 +234,7 @@ const i18n = {
 
 let currentLang = 'zh';
 
+// Modal configs with full bilingual support
 const modalConfigs = {
     ph: {
         title: {zh: "pH值详细说明", en: "pH Detail"},
@@ -320,6 +321,7 @@ const metricMeta = {
     f2: { field: 'field6', legendKey: 'legend_f2', axis: 'axis_flow', color: '#f97316' }
 };
 
+// Status evaluation for colored dots
 function getPhStatus(v) {
     if (v === null) return 'gray';
     if (v >= 6.0 && v <= 9.0) return 'green';
@@ -356,6 +358,7 @@ function setDot(id, status) {
     el.className = 'status-dot ' + status;
 }
 
+// Init tooltips
 function initTooltips() {
     const tips = {
         'tip_ph': i18n[currentLang].tip_ph,
@@ -373,6 +376,7 @@ function initTooltips() {
     tippy('.info-icon', { placement: 'top', animation: 'scale', theme: 'light-border' });
 }
 
+// A/B + Language + Init
 document.addEventListener('DOMContentLoaded', () => {
     const btn = document.querySelector('.ab-btn');
     if (btn && abVariant === 'A') {
@@ -562,6 +566,7 @@ async function measureNetworkLatency() {
     updateLatencyIndicator();
 }
 
+// Modal
 function openModal(type) {
     const config = modalConfigs[type];
     if (!config) return;
@@ -606,6 +611,7 @@ function closeModal() {
     document.getElementById('detail-modal').classList.remove('active');
 }
 
+// Data
 let allFeeds = [];
 
 async function fetchData() {
@@ -680,7 +686,7 @@ async function loadRuntimeConfig() {
         if (readKeyEl) readKeyEl.value = cfg.thingspeak_read_key || '';
         if (aiKeyEl) aiKeyEl.value = '';
         if (aiKeyEl && cfg.ai_api_key_configured) {
-            aiKeyEl.placeholder = cfg.ai_api_key_masked || 'Already configured';
+             aiKeyEl.placeholder = cfg.ai_api_key_masked || 'Already configured';
         }
     } catch (e) {
         console.error(e);
@@ -892,7 +898,7 @@ function buildQualityModalDesc(baseDesc) {
     return `${baseDesc} ${latestClassification.score_formula}`;
 }
 
-// ---------- 时间轴与日期分隔 ----------
+// ---------- 时间轴与自适应范围 ----------
 function formatDateTimeFull(value) {
     if (!value) return '--';
     const d = new Date(value);
@@ -948,6 +954,7 @@ function getTimeAxisData() {
             raw,
             date: d,
             valid,
+            timestamp: valid ? d.getTime() : null,
             full: valid ? formatDateTimeFull(raw) : String(raw || '--'),
             short: valid ? formatTimeShort(d) : String(raw || '--'),
             isNewDay,
@@ -956,24 +963,11 @@ function getTimeAxisData() {
     });
 }
 
-function getAdaptiveLabelInterval(total) {
-    if (total <= 12) return 0;
-    if (total <= 24) return 1;
-    if (total <= 48) return 2;
-    if (total <= 96) return 4;
-    if (total <= 200) return 8;
-    if (total <= 400) return 16;
-    if (total <= 800) return 32;
-    return Math.ceil(total / 20);
-}
-
-function buildTimeAxisLabelFormatter(axisData) {
-    const interval = getAdaptiveLabelInterval(axisData.length);
-    return function (value, index) {
-        const item = axisData[index];
-        if (!item) return value;
-        if (interval === 0) return item.short;
-        return index % interval === 0 ? item.short : '';
+function buildTimeAxisLabelFormatterForTimeAxis() {
+    return function (value) {
+        const d = new Date(value);
+        if (isNaN(d.getTime())) return '';
+        return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
     };
 }
 
@@ -1009,8 +1003,8 @@ function getAdaptiveValueRange(values, options = {}) {
     if (minVal === maxVal) {
         const base = Math.abs(maxVal) || minSpan;
         const delta = Math.max(base * 0.25, minSpan * 0.5);
-        minVal -= delta;
-        maxVal += delta;
+        minVal = minVal - delta;
+        maxVal = maxVal + delta;
     }
 
     let span = maxVal - minVal;
@@ -1069,7 +1063,6 @@ function getSingleAxisRange(key, values, zoomRange = null) {
 
     if (key === 'ph') return { min: 0, max: 14 };
     if (key === 'level') return { min: 0, max: 100 };
-
     if (key === 'cond') {
         return getAdaptiveValueRange(visibleValues, {
             floor: 0,
@@ -1078,7 +1071,6 @@ function getSingleAxisRange(key, values, zoomRange = null) {
             smallValueBoost: true
         });
     }
-
     if (key === 'turbidity') {
         return getAdaptiveValueRange(visibleValues, {
             floor: 0,
@@ -1087,7 +1079,6 @@ function getSingleAxisRange(key, values, zoomRange = null) {
             smallValueBoost: false
         });
     }
-
     if (key === 'f1' || key === 'f2') {
         return getAdaptiveValueRange(visibleValues, {
             floor: 0,
@@ -1096,7 +1087,6 @@ function getSingleAxisRange(key, values, zoomRange = null) {
             smallValueBoost: true
         });
     }
-
     return getAdaptiveValueRange(visibleValues, {
         floor: 0,
         minSpan: 1,
@@ -1133,10 +1123,10 @@ function getDateDividerMeta(axisData) {
     const visibleDividers = [];
     for (let i = startIndex; i <= endIndex; i++) {
         const item = axisData[i];
-        if (item && item.isNewDay && item.dividerLabel) {
+        if (item && item.isNewDay && item.timestamp !== null && item.dividerLabel) {
             visibleDividers.push({
                 index: i,
-                xAxis: axisData[i].full,
+                xAxis: item.timestamp,
                 label: item.dividerLabel
             });
         }
@@ -1156,7 +1146,7 @@ function buildDateDividerMarkLine(axisData) {
             color: '#94a3b8',
             width: 1,
             type: 'dashed',
-            opacity: 0.8
+            opacity: 0.85
         },
         data: dividerMeta.map(item => ({ xAxis: item.xAxis }))
     };
@@ -1166,21 +1156,28 @@ function buildDateDividerGraphics(axisData) {
     const dividerMeta = getDateDividerMeta(axisData);
     if (!dividerMeta.length) return [];
 
-    return dividerMeta.map(item => ({
-        type: 'text',
-        left: `${((item.index / Math.max(axisData.length - 1, 1)) * 100).toFixed(3)}%`,
-        top: 30,
-        z: 100,
-        style: {
-            text: item.label,
-            fill: '#64748b',
-            font: '12px sans-serif',
-            align: 'left',
-            backgroundColor: 'rgba(255,255,255,0.78)',
-            padding: [2, 6],
-            borderRadius: 6
-        }
-    }));
+    const { startIndex, endIndex } = getVisibleIndexRange(axisData.length, currentZoomRange);
+    const visibleCount = Math.max(1, endIndex - startIndex);
+
+    return dividerMeta.map(item => {
+        const ratio = (item.index - startIndex) / visibleCount;
+        return {
+            type: 'text',
+            left: `${(ratio * 100).toFixed(3)}%`,
+            top: 30,
+            z: 100,
+            silent: true,
+            style: {
+                text: item.label,
+                fill: '#64748b',
+                font: '12px sans-serif',
+                align: 'left',
+                backgroundColor: 'rgba(255,255,255,0.82)',
+                padding: [2, 6],
+                borderRadius: 6
+            }
+        };
+    });
 }
 
 function attachChartEvents() {
@@ -1222,56 +1219,57 @@ function updateChart() {
 
 function buildOverviewOption() {
     const timeAxis = getTimeAxisData();
-    const times = timeAxis.map(t => t.full);
     const scoreValues = getScoreSeries();
-    const formatter = buildTimeAxisLabelFormatter(timeAxis);
+    const formatter = buildTimeAxisLabelFormatterForTimeAxis();
     const markLine = buildDateDividerMarkLine(timeAxis);
     const graphics = buildDateDividerGraphics(timeAxis);
 
+    const seriesData = timeAxis
+        .map((t, idx) => [t.timestamp, scoreValues[idx]])
+        .filter(item => item[0] !== null);
+
     return {
-        title: { text: T('trend_overview_title'), left: 'center', textStyle: { fontSize: 16, fontWeight: 600, color: '#334155' } },
+        title: {
+            text: T('trend_overview_title'),
+            left: 'center',
+            textStyle: { fontSize: 16, fontWeight: 600, color: '#334155' }
+        },
         tooltip: {
             trigger: 'axis',
             formatter: function (params) {
                 const p = Array.isArray(params) ? params[0] : params;
-                const idx = p && typeof p.dataIndex === 'number' ? p.dataIndex : -1;
-                const feed = idx >= 0 ? allFeeds[idx] : null;
-                const score = p && p.data != null ? p.data : '--';
-                const f1 = feed && feed.field1 != null ? Number(feed.field1).toFixed(2) : '--';
-                const cond = feed && feed.field2 != null ? formatValue(toMsCm(safeNum(feed.field2)), 2) : '--';
-                const ph = feed && feed.field3 != null ? Number(feed.field3).toFixed(2) : '--';
-                const level = feed && feed.field4 != null ? Number(feed.field4).toFixed(2) : '--';
-                const turbidity = feed && feed.field5 != null ? Number(feed.field5).toFixed(2) : '--';
-                const f2 = feed && feed.field6 != null ? Number(feed.field6).toFixed(2) : '--';
-                const timeText = idx >= 0 && times[idx] ? times[idx] : '';
-                return [
-                    `${timeText}`,
-                    `${T('legend_score')}: ${score}`,
-                    `${T('legend_f1')}: ${f1}`,
-                    `${T('legend_cond')}: ${cond}`,
-                    `${T('legend_ph')}: ${ph}`,
-                    `${T('legend_level')}: ${level}`,
-                    `${T('legend_turbidity')}: ${turbidity}`,
-                    `${T('legend_f2')}: ${f2}`
-                ].join('<br/>');
+                if (!p) return '--';
+                const rawTime = Array.isArray(p.value) ? p.value[0] : p.axisValue;
+                const score = Array.isArray(p.value) ? p.value[1] : p.data;
+                const timeText = formatDateTimeFull(rawTime);
+                return `${timeText}<br/>${T('legend_score')}: ${score ?? '--'}`;
             }
         },
-        legend: { data: [T('legend_score')], bottom: 0, icon: 'roundRect', textStyle: { fontSize: 13, color: '#475569' } },
+        legend: {
+            data: [T('legend_score')],
+            bottom: 0,
+            icon: 'roundRect',
+            textStyle: { fontSize: 13, color: '#475569' }
+        },
         dataZoom: [
             { type: 'inside', start: currentZoomRange.start, end: currentZoomRange.end },
-            { start: currentZoomRange.start, end: currentZoomRange.end, height: 18, bottom: 32 }
+            { type: 'slider', start: currentZoomRange.start, end: currentZoomRange.end, height: 18, bottom: 32 }
         ],
         grid: { left: '9%', right: '5%', top: 58, bottom: 78, containLabel: true },
         graphic: graphics,
         xAxis: {
-            type: 'category',
+            type: 'time',
             boundaryGap: false,
-            data: times,
             axisLabel: {
                 fontSize: 12,
                 color: '#64748b',
-                rotate: timeAxis.length > 30 ? 30 : 0,
                 formatter
+            },
+            splitLine: {
+                show: true,
+                lineStyle: {
+                    color: 'rgba(148,163,184,0.15)'
+                }
             }
         },
         yAxis: [{
@@ -1287,7 +1285,7 @@ function buildOverviewOption() {
             type: 'line',
             smooth: true,
             showSymbol: false,
-            data: scoreValues,
+            data: seriesData,
             markLine,
             itemStyle: { color: '#0ea5e9' },
             lineStyle: { width: 3 },
@@ -1305,42 +1303,59 @@ function buildOverviewOption() {
 function buildSingleOption(key) {
     const meta = metricMeta[key] || metricMeta.ph;
     const timeAxis = getTimeAxisData();
-    const times = timeAxis.map(t => t.full);
-    const data = getSeriesValues(key);
-    const axisRange = getSingleAxisRange(key, data, currentZoomRange);
+    const rawData = getSeriesValues(key);
+    const axisRange = getSingleAxisRange(key, rawData, currentZoomRange);
     const label = T(meta.legendKey);
-    const formatter = buildTimeAxisLabelFormatter(timeAxis);
+    const formatter = buildTimeAxisLabelFormatterForTimeAxis();
     const markLine = buildDateDividerMarkLine(timeAxis);
     const graphics = buildDateDividerGraphics(timeAxis);
 
+    const seriesData = timeAxis
+        .map((t, idx) => [t.timestamp, rawData[idx]])
+        .filter(item => item[0] !== null);
+
     return {
-        title: { text: label, left: 'center', textStyle: { fontSize: 16, fontWeight: 600, color: '#334155' } },
+        title: {
+            text: label,
+            left: 'center',
+            textStyle: { fontSize: 16, fontWeight: 600, color: '#334155' }
+        },
         tooltip: {
             trigger: 'axis',
             formatter: function (params) {
                 const p = Array.isArray(params) ? params[0] : params;
-                const idx = p && typeof p.dataIndex === 'number' ? p.dataIndex : -1;
-                const timeText = idx >= 0 && times[idx] ? times[idx] : '--';
-                const val = p && p.data != null ? p.data : '--';
-                return `${timeText}<br/>${label}: ${val}`;
+                if (!p) return '--';
+                const rawTime = Array.isArray(p.value) ? p.value[0] : p.axisValue;
+                const val = Array.isArray(p.value) ? p.value[1] : p.data;
+                const timeText = formatDateTimeFull(rawTime);
+                return `${timeText}<br/>${label}: ${val ?? '--'}`;
             }
         },
-        legend: { data: [label], bottom: 0, icon: 'roundRect', textStyle: { fontSize: 13, color: '#475569' } },
+        legend: {
+            data: [label],
+            bottom: 0,
+            icon: 'roundRect',
+            textStyle: { fontSize: 13, color: '#475569' }
+        },
         dataZoom: [
             { type: 'inside', start: currentZoomRange.start, end: currentZoomRange.end },
-            { start: currentZoomRange.start, end: currentZoomRange.end, height: 18, bottom: 32 }
+            { type: 'slider', start: currentZoomRange.start, end: currentZoomRange.end, height: 18, bottom: 32 }
         ],
         grid: { left: '9%', right: '5%', top: 58, bottom: 78, containLabel: true },
         graphic: graphics,
         xAxis: {
-            type: 'category',
+            type: 'time',
             boundaryGap: false,
-            data: times,
             axisLabel: {
                 fontSize: 12,
                 color: '#64748b',
-                rotate: timeAxis.length > 30 ? 30 : 0,
                 formatter
+            },
+            splitLine: {
+                show: true,
+                lineStyle: {
+                    color: 'rgba(148,163,184,0.15)'
+                }
             }
         },
         yAxis: [{
@@ -1357,7 +1372,7 @@ function buildSingleOption(key) {
             type: 'line',
             smooth: true,
             showSymbol: false,
-            data,
+            data: seriesData,
             markLine,
             itemStyle: { color: meta.color },
             lineStyle: { width: 3 },
