@@ -234,7 +234,6 @@ const i18n = {
 
 let currentLang = 'zh';
 
-// Modal configs with full bilingual support
 const modalConfigs = {
     ph: {
         title: {zh: "pH值详细说明", en: "pH Detail"},
@@ -321,7 +320,6 @@ const metricMeta = {
     f2: { field: 'field6', legendKey: 'legend_f2', axis: 'axis_flow', color: '#f97316' }
 };
 
-// Status evaluation for colored dots
 function getPhStatus(v) {
     if (v === null) return 'gray';
     if (v >= 6.0 && v <= 9.0) return 'green';
@@ -682,7 +680,7 @@ async function loadRuntimeConfig() {
         if (readKeyEl) readKeyEl.value = cfg.thingspeak_read_key || '';
         if (aiKeyEl) aiKeyEl.value = '';
         if (aiKeyEl && cfg.ai_api_key_configured) {
-             aiKeyEl.placeholder = cfg.ai_api_key_masked || 'Already configured';
+            aiKeyEl.placeholder = cfg.ai_api_key_masked || 'Already configured';
         }
     } catch (e) {
         console.error(e);
@@ -894,7 +892,7 @@ function buildQualityModalDesc(baseDesc) {
     return `${baseDesc} ${latestClassification.score_formula}`;
 }
 
-// ---------- 时间轴与自适应范围 ----------
+// ---------- 时间轴与日期分隔 ----------
 function formatDateTimeFull(value) {
     if (!value) return '--';
     const d = new Date(value);
@@ -912,8 +910,11 @@ function formatTimeShort(d) {
     return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 }
 
-function formatMonthDayTime(d) {
-    return `${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${formatTimeShort(d)}`;
+function formatDateDividerLabel(d) {
+    if (currentLang === 'zh') {
+        return `${d.getMonth() + 1}月${d.getDate()}日 0:00`;
+    }
+    return `${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')} 00:00`;
 }
 
 function getTimeAxisData() {
@@ -921,23 +922,36 @@ function getTimeAxisData() {
         const raw = f.created_at || '';
         const d = new Date(raw);
         const valid = !isNaN(d.getTime());
-        const prevRaw = idx > 0 ? allFeeds[idx - 1].created_at : null;
-        const prev = prevRaw ? new Date(prevRaw) : null;
-        const sameDayAsPrev =
-            valid &&
-            prev &&
-            !isNaN(prev.getTime()) &&
-            d.getFullYear() === prev.getFullYear() &&
-            d.getMonth() === prev.getMonth() &&
-            d.getDate() === prev.getDate();
+
+        let isNewDay = idx === 0;
+        let dividerLabel = null;
+
+        if (valid && idx > 0) {
+            const prevRaw = allFeeds[idx - 1].created_at;
+            const prev = new Date(prevRaw);
+            if (
+                !isNaN(prev.getTime()) &&
+                (d.getFullYear() !== prev.getFullYear() ||
+                 d.getMonth() !== prev.getMonth() ||
+                 d.getDate() !== prev.getDate())
+            ) {
+                isNewDay = true;
+                dividerLabel = formatDateDividerLabel(d);
+            } else {
+                isNewDay = false;
+            }
+        } else if (valid && idx === 0) {
+            dividerLabel = formatDateDividerLabel(d);
+        }
 
         return {
             raw,
+            date: d,
+            valid,
             full: valid ? formatDateTimeFull(raw) : String(raw || '--'),
             short: valid ? formatTimeShort(d) : String(raw || '--'),
-            withDate: valid ? formatMonthDayTime(d) : String(raw || '--'),
-            dayKey: valid ? `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}` : `idx-${idx}`,
-            isNewDay: idx === 0 ? true : !sameDayAsPrev
+            isNewDay,
+            dividerLabel
         };
     });
 }
@@ -958,7 +972,6 @@ function buildTimeAxisLabelFormatter(axisData) {
     return function (value, index) {
         const item = axisData[index];
         if (!item) return value;
-        if (item.isNewDay) return item.withDate;
         if (interval === 0) return item.short;
         return index % interval === 0 ? item.short : '';
     };
@@ -1115,6 +1128,61 @@ function getScoreSeries() {
     return allFeeds.map(f => calcQualityScoreFromFeed(f));
 }
 
+function getDateDividerMeta(axisData) {
+    const { startIndex, endIndex } = getVisibleIndexRange(axisData.length, currentZoomRange);
+    const visibleDividers = [];
+    for (let i = startIndex; i <= endIndex; i++) {
+        const item = axisData[i];
+        if (item && item.isNewDay && item.dividerLabel) {
+            visibleDividers.push({
+                index: i,
+                xAxis: axisData[i].full,
+                label: item.dividerLabel
+            });
+        }
+    }
+    return visibleDividers;
+}
+
+function buildDateDividerMarkLine(axisData) {
+    const dividerMeta = getDateDividerMeta(axisData);
+    if (!dividerMeta.length) return null;
+
+    return {
+        symbol: ['none', 'none'],
+        silent: true,
+        label: { show: false },
+        lineStyle: {
+            color: '#94a3b8',
+            width: 1,
+            type: 'dashed',
+            opacity: 0.8
+        },
+        data: dividerMeta.map(item => ({ xAxis: item.xAxis }))
+    };
+}
+
+function buildDateDividerGraphics(axisData) {
+    const dividerMeta = getDateDividerMeta(axisData);
+    if (!dividerMeta.length) return [];
+
+    return dividerMeta.map(item => ({
+        type: 'text',
+        left: `${((item.index / Math.max(axisData.length - 1, 1)) * 100).toFixed(3)}%`,
+        top: 30,
+        z: 100,
+        style: {
+            text: item.label,
+            fill: '#64748b',
+            font: '12px sans-serif',
+            align: 'left',
+            backgroundColor: 'rgba(255,255,255,0.78)',
+            padding: [2, 6],
+            borderRadius: 6
+        }
+    }));
+}
+
 function attachChartEvents() {
     if (!chart) return;
     chart.off('datazoom');
@@ -1127,9 +1195,7 @@ function attachChartEvents() {
                 end: zoom.end ?? currentZoomRange.end
             };
         }
-        if (currentTrend !== 'overview') {
-            updateChart();
-        }
+        updateChart();
     });
 }
 
@@ -1159,6 +1225,8 @@ function buildOverviewOption() {
     const times = timeAxis.map(t => t.full);
     const scoreValues = getScoreSeries();
     const formatter = buildTimeAxisLabelFormatter(timeAxis);
+    const markLine = buildDateDividerMarkLine(timeAxis);
+    const graphics = buildDateDividerGraphics(timeAxis);
 
     return {
         title: { text: T('trend_overview_title'), left: 'center', textStyle: { fontSize: 16, fontWeight: 600, color: '#334155' } },
@@ -1194,6 +1262,7 @@ function buildOverviewOption() {
             { start: currentZoomRange.start, end: currentZoomRange.end, height: 18, bottom: 32 }
         ],
         grid: { left: '9%', right: '5%', top: 58, bottom: 78, containLabel: true },
+        graphic: graphics,
         xAxis: {
             type: 'category',
             boundaryGap: false,
@@ -1219,6 +1288,7 @@ function buildOverviewOption() {
             smooth: true,
             showSymbol: false,
             data: scoreValues,
+            markLine,
             itemStyle: { color: '#0ea5e9' },
             lineStyle: { width: 3 },
             areaStyle: {
@@ -1240,6 +1310,8 @@ function buildSingleOption(key) {
     const axisRange = getSingleAxisRange(key, data, currentZoomRange);
     const label = T(meta.legendKey);
     const formatter = buildTimeAxisLabelFormatter(timeAxis);
+    const markLine = buildDateDividerMarkLine(timeAxis);
+    const graphics = buildDateDividerGraphics(timeAxis);
 
     return {
         title: { text: label, left: 'center', textStyle: { fontSize: 16, fontWeight: 600, color: '#334155' } },
@@ -1259,6 +1331,7 @@ function buildSingleOption(key) {
             { start: currentZoomRange.start, end: currentZoomRange.end, height: 18, bottom: 32 }
         ],
         grid: { left: '9%', right: '5%', top: 58, bottom: 78, containLabel: true },
+        graphic: graphics,
         xAxis: {
             type: 'category',
             boundaryGap: false,
@@ -1285,6 +1358,7 @@ function buildSingleOption(key) {
             smooth: true,
             showSymbol: false,
             data,
+            markLine,
             itemStyle: { color: meta.color },
             lineStyle: { width: 3 },
             areaStyle: {
