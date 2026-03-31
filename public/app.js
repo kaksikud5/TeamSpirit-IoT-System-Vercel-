@@ -462,7 +462,6 @@ function updateTranslations() {
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         const text = T(key);
-        // Preserve child elements (like SVG icons)
         const children = Array.from(el.childNodes);
         const firstText = children.find(n => n.nodeType === Node.TEXT_NODE);
         if (firstText) {
@@ -476,7 +475,6 @@ function updateTranslations() {
         el.placeholder = T(el.getAttribute('data-i18n-placeholder'));
     });
 
-    // Update greeting message
     const greetingEl = document.querySelector('#chat-messages [data-i18n="ai_greeting"]');
     if (greetingEl) greetingEl.textContent = T('ai_greeting');
     updateTrendTabs();
@@ -918,11 +916,74 @@ function updateChart() {
     }
 }
 
-function getTimeLabels() {
-    return allFeeds.map(f => {
-        const d = new Date(f.created_at);
-        return `${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`;
+// ---------- 时间与坐标轴自适应：新增/重写部分 ----------
+function formatDateTimeFull(value) {
+    if (!value) return '--';
+    const d = new Date(value);
+    if (isNaN(d.getTime())) return String(value);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    const hh = String(d.getHours()).padStart(2, '0');
+    const mi = String(d.getMinutes()).padStart(2, '0');
+    const ss = String(d.getSeconds()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd} ${hh}:${mi}:${ss}`;
+}
+
+function formatTimeShort(d) {
+    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+}
+
+function formatMonthDayTime(d) {
+    return `${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${formatTimeShort(d)}`;
+}
+
+function getTimeAxisData() {
+    return allFeeds.map((f, idx) => {
+        const raw = f.created_at || '';
+        const d = new Date(raw);
+        const valid = !isNaN(d.getTime());
+        const prevRaw = idx > 0 ? allFeeds[idx - 1].created_at : null;
+        const prev = prevRaw ? new Date(prevRaw) : null;
+        const sameDayAsPrev =
+            valid &&
+            prev &&
+            !isNaN(prev.getTime()) &&
+            d.getFullYear() === prev.getFullYear() &&
+            d.getMonth() === prev.getMonth() &&
+            d.getDate() === prev.getDate();
+
+        return {
+            raw,
+            full: valid ? formatDateTimeFull(raw) : String(raw || '--'),
+            short: valid ? formatTimeShort(d) : String(raw || '--'),
+            withDate: valid ? formatMonthDayTime(d) : String(raw || '--'),
+            dayKey: valid ? `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}` : `idx-${idx}`,
+            isNewDay: idx === 0 ? true : !sameDayAsPrev
+        };
     });
+}
+
+function getAdaptiveLabelInterval(total) {
+    if (total <= 12) return 0;
+    if (total <= 24) return 1;
+    if (total <= 48) return 2;
+    if (total <= 96) return 4;
+    if (total <= 200) return 8;
+    if (total <= 400) return 16;
+    if (total <= 800) return 32;
+    return Math.ceil(total / 20);
+}
+
+function buildTimeAxisLabelFormatter(axisData) {
+    const interval = getAdaptiveLabelInterval(axisData.length);
+    return function (value, index) {
+        const item = axisData[index];
+        if (!item) return value;
+        if (item.isNewDay) return item.withDate;
+        if (interval === 0) return item.short;
+        return index % interval === 0 ? item.short : '';
+    };
 }
 
 function getSeriesValues(key) {
@@ -934,25 +995,103 @@ function getSeriesValues(key) {
     });
 }
 
-function getSingleAxisRange(key, values) {
-    if (key === 'ph') return { min: 0, max: 14 };
-    if (key === 'turbidity') {
-        const valid = values.filter(v => v !== null);
-        const maxVal = valid.length ? Math.max(...valid) : 5;
-        return { min: 0, max: Math.max(6, Math.ceil(maxVal * 1.2)) };
+function getAdaptiveValueRange(values, options = {}) {
+    const valid = values.filter(v => v !== null && !Number.isNaN(v));
+    const {
+        floor = null,
+        ceil = null,
+        minSpan = 1,
+        paddingRatio = 0.12,
+        smallValueBoost = true
+    } = options;
+
+    if (!valid.length) {
+        return {
+            min: floor !== null ? floor : 0,
+            max: ceil !== null ? ceil : Math.max(minSpan, 1)
+        };
     }
-    if (key === 'level') return { min: 0, max: 100 };
-    if (key === 'cond') return { min: 0, max: 20 };
-    return { min: 0.3, max: 6 };
+
+    let minVal = Math.min(...valid);
+    let maxVal = Math.max(...valid);
+
+    if (minVal === maxVal) {
+        const base = Math.abs(maxVal) || minSpan;
+        const delta = Math.max(base * 0.25, minSpan * 0.5);
+        minVal = minVal - delta;
+        maxVal = maxVal + delta;
+    }
+
+    let span = maxVal - minVal;
+    const padding = Math.max(span * paddingRatio, span < minSpan ? minSpan * 0.25 : 0);
+
+    let min = minVal - padding;
+    let max = maxVal + padding;
+
+    if (smallValueBoost && maxVal <= 1) {
+        min = Math.max(0, min);
+        max = Math.max(max, maxVal * 1.6 + 0.02);
+    }
+
+    if (floor !== null) min = Math.max(floor, min);
+    if (ceil !== null) max = Math.min(ceil, max);
+
+    if (max - min < minSpan) {
+        const center = (max + min) / 2;
+        min = center - minSpan / 2;
+        max = center + minSpan / 2;
+        if (floor !== null && min < floor) {
+            min = floor;
+            max = floor + minSpan;
+        }
+        if (ceil !== null && max > ceil) {
+            max = ceil;
+            min = ceil - minSpan;
+        }
+    }
+
+    if (floor !== null) min = Math.max(floor, min);
+    if (ceil !== null) max = Math.min(ceil, max);
+
+    return {
+        min: Number(min.toFixed(4)),
+        max: Number(max.toFixed(4))
+    };
 }
 
-function normalizeSeries(values) {
-    const valid = values.filter(v => v !== null);
-    if (valid.length === 0) return values.map(() => null);
-    const min = Math.min(...valid);
-    const max = Math.max(...valid);
-    if (max === min) return values.map(v => (v === null ? null : 50));
-    return values.map(v => (v === null ? null : Number((((v - min) / (max - min)) * 100).toFixed(2))));
+function getSingleAxisRange(key, values) {
+    if (key === 'ph') return { min: 0, max: 14 };
+    if (key === 'level') return { min: 0, max: 100 };
+    if (key === 'cond') {
+        return getAdaptiveValueRange(values, {
+            floor: 0,
+            minSpan: 0.2,
+            paddingRatio: 0.15,
+            smallValueBoost: true
+        });
+    }
+    if (key === 'turbidity') {
+        return getAdaptiveValueRange(values, {
+            floor: 0,
+            minSpan: 1,
+            paddingRatio: 0.15,
+            smallValueBoost: false
+        });
+    }
+    if (key === 'f1' || key === 'f2') {
+        return getAdaptiveValueRange(values, {
+            floor: 0,
+            minSpan: 0.05,
+            paddingRatio: 0.2,
+            smallValueBoost: true
+        });
+    }
+    return getAdaptiveValueRange(values, {
+        floor: 0,
+        minSpan: 1,
+        paddingRatio: 0.12,
+        smallValueBoost: false
+    });
 }
 
 function calcQualityScoreFromFeed(feed) {
@@ -979,8 +1118,11 @@ function getScoreSeries() {
 }
 
 function buildOverviewOption() {
-    const times = getTimeLabels();
+    const timeAxis = getTimeAxisData();
+    const times = timeAxis.map(t => t.full);
     const scoreValues = getScoreSeries();
+    const formatter = buildTimeAxisLabelFormatter(timeAxis);
+
     return {
         title: { text: T('trend_overview_title'), left: 'center', textStyle: { fontSize: 16, fontWeight: 600, color: '#334155' } },
         tooltip: {
@@ -1019,7 +1161,12 @@ function buildOverviewOption() {
             type: 'category',
             boundaryGap: false,
             data: times,
-            axisLabel: { fontSize: 12, color: '#64748b' }
+            axisLabel: {
+                fontSize: 12,
+                color: '#64748b',
+                rotate: timeAxis.length > 30 ? 30 : 0,
+                formatter
+            }
         },
         yAxis: [{
             type: 'value',
@@ -1050,13 +1197,25 @@ function buildOverviewOption() {
 
 function buildSingleOption(key) {
     const meta = metricMeta[key] || metricMeta.ph;
-    const times = getTimeLabels();
+    const timeAxis = getTimeAxisData();
+    const times = timeAxis.map(t => t.full);
     const data = getSeriesValues(key);
     const axisRange = getSingleAxisRange(key, data);
     const label = T(meta.legendKey);
+    const formatter = buildTimeAxisLabelFormatter(timeAxis);
+
     return {
         title: { text: label, left: 'center', textStyle: { fontSize: 16, fontWeight: 600, color: '#334155' } },
-        tooltip: { trigger: 'axis' },
+        tooltip: {
+            trigger: 'axis',
+            formatter: function (params) {
+                const p = Array.isArray(params) ? params[0] : params;
+                const idx = p && typeof p.dataIndex === 'number' ? p.dataIndex : -1;
+                const timeText = idx >= 0 && times[idx] ? times[idx] : '--';
+                const val = p && p.data != null ? p.data : '--';
+                return `${timeText}<br/>${label}: ${val}`;
+            }
+        },
         legend: { data: [label], bottom: 0, icon: 'roundRect', textStyle: { fontSize: 13, color: '#475569' } },
         dataZoom: [
             { type: 'inside', start: 55, end: 100 },
@@ -1067,13 +1226,19 @@ function buildSingleOption(key) {
             type: 'category',
             boundaryGap: false,
             data: times,
-            axisLabel: { fontSize: 12, color: '#64748b' }
+            axisLabel: {
+                fontSize: 12,
+                color: '#64748b',
+                rotate: timeAxis.length > 30 ? 30 : 0,
+                formatter
+            }
         },
         yAxis: [{
             type: 'value',
             name: T(meta.axis),
             min: axisRange.min,
             max: axisRange.max,
+            scale: true,
             nameTextStyle: { fontSize: 12, color: '#64748b' },
             axisLabel: { fontSize: 12, color: '#64748b' }
         }],
