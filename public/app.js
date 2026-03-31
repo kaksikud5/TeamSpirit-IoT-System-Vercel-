@@ -967,11 +967,12 @@ function updateChart() {
 
     const filtered = getFilteredFeeds();
 
+    // 日期筛选后无数据 → 显示多语言空状态
     if (filtered.length === 0) {
         chart.clear();
         chart.setOption({
             title: {
-                text: T('no_data_label'),
+                text: T('no_data_label'), // 直接使用你现有的多语言key
                 left: 'center', top: 'middle',
                 textStyle: { fontSize: 16, color: '#94a3b8', fontWeight: 400 }
             },
