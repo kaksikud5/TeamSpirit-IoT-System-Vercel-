@@ -12,6 +12,10 @@ const i18n = {
         title: "智能灰水处理监控平台",
         guide_btn: "向导",
         quality_title: "综合水质评级",
+        date_from: "从",
+        date_to: "至",
+        date_all: "全部",
+        date_filter_active: "日期筛选已激活",
         chart_title: "参数变化趋势与监测视图",
         card_ph: "PH值",
         card_cond: "电导率（ms/cm）",
@@ -110,19 +114,24 @@ const i18n = {
         range_level_green: "5% - 95%",
         range_level_red: "< 5% 或 > 95%",
         range_flow_green: "2.0 - 4.8（L/min）",
-        range_flow_yellow: "0.3 - 1.1 或 5.2 - 6.0（L/min）",
+        range_flow_yellow: "0-1.1 或 5.2-6.0（L/min）",
         range_flow_red: "1.2 - 1.9（L/min）",
         tip_ph: "水体酸碱度，国标建议范围 6.0 - 9.0",
         tip_cond: "反映水中溶解盐类浓度，通常低于1.0(ms/cm)为佳",
         tip_turbidity: "反映水体浑浊程度，通常越低越好",
         tip_level: "储水池液位百分比 (0-100%)",
         tip_f1: "轻污染入水流量监测",
-        tip_f2: "重污染入水流量监测"
+        tip_f2: "重污染入水流量监测",
+        no_data_label: "暂无数据"
     },
     en: {
         title: "Smart Greywater Monitoring",
         guide_btn: "Guide",
         quality_title: "Water Quality Grade",
+        date_from: "From",
+        date_to: "To",
+        date_all: "All",
+        date_filter_active: "Date filter active",
         chart_title: "Trend Monitoring & Visualization",
         card_ph: "PH",
         card_cond: "Conductivity (mS/cm)",
@@ -202,7 +211,7 @@ const i18n = {
         context_prefix: "Current latest water quality data:",
         context_ph: "PH",
         context_cond: "Conductivity (ms/cm)",
-        context_turbidity: "Turbidity",
+        context_turbidity: "Conductivity",
         context_level: "Water Level",
         context_f1: "Inflow (Light)",
         context_f2: "Inflow (Heavy)",
@@ -221,14 +230,15 @@ const i18n = {
         range_level_green: "5% - 95%",
         range_level_red: "< 5% or > 95%",
         range_flow_green: "2.0 - 4.8 (L/min)",
-        range_flow_yellow: "0.3 - 1.1 or 5.2 - 6.0 (L/min)",
+        range_flow_yellow: "0-1.1 or 5.2-6.0 (L/min)",
         range_flow_red: "1.2 - 1.9 (L/min)",
         tip_ph: "Water acidity/alkalinity, recommended range 6.0 - 9.0",
         tip_cond: "Dissolved salt concentration, ideally below 1.0 (ms/cm)",
         tip_turbidity: "Represents water cloudiness, lower is better",
         tip_level: "Storage tank level percentage (0-100%)",
         tip_f1: "Light-pollution inflow monitoring",
-        tip_f2: "Heavy-pollution inflow monitoring"
+        tip_f2: "Heavy-pollution inflow monitoring",
+        no_data_label: "No data available"
     }
 };
 
@@ -268,7 +278,7 @@ const modalConfigs = {
         desc: {zh: "用于监测轻污染来水瞬时流量（L/min），帮助判断前端来水是否稳定。", en: "Monitors instant inflow of light-pollution stream (L/min) to evaluate influent stability."},
         ranges: [
             {color: "green", condition: {zh: "2.0 - 4.8（L/min）", en: "2.0 - 4.8 (L/min)"}, desc: {zh: "供水稳定，系统负荷匹配。", en: "Stable supply with matched system load."}},
-            {color: "yellow", condition: {zh: "0.3 - 1.1 或 5.2 - 6.0（L/min）", en: "0.3 - 1.1 or 5.2 - 6.0 (L/min)"}, desc: {zh: "偏离目标区间，建议检查阀门与来水波动。", en: "Off target range; check valve state and influent fluctuation."}},
+            {color: "yellow", condition: {zh: "0-1.1 或 5.2-6.0（L/min）", en: "0-1.1 or 5.2-6.0 (L/min)"}, desc: {zh: "偏离目标区间，建议检查阀门与来水波动。", en: "Off target range; check valve state and influent fluctuation."}},
             {color: "red", condition: {zh: "1.2 - 1.9（L/min）", en: "1.2 - 1.9 (L/min)"}, desc: {zh: "异常工况区，建议立即排查传感器与管路。", en: "Abnormal operating band; inspect sensor and pipeline immediately."}}
         ]
     },
@@ -286,19 +296,19 @@ const modalConfigs = {
         desc: {zh: "用于监测重污染来水瞬时流量（L/min），便于及时识别高负荷冲击。", en: "Monitors instant inflow of heavy-pollution stream (L/min) for high-load shock detection."},
         ranges: [
             {color: "green", condition: {zh: "2.0 - 4.8（L/min）", en: "2.0 - 4.8 (L/min)"}, desc: {zh: "运行平稳，可维持既定处理节奏。", en: "Stable operation and controllable treatment rhythm."}},
-            {color: "yellow", condition: {zh: "0.3 - 1.1 或 5.2 - 6.0（L/min）", en: "0.3 - 1.1 or 5.2 - 6.0 (L/min)"}, desc: {zh: "负荷出现波动，建议预警并持续观察。", en: "Load fluctuates; trigger warning and continue observation."}},
+            {color: "yellow", condition: {zh: "0-1.1 或 5.2-6.0（L/min）", en: "0-1.1 or 5.2-6.0 (L/min)"}, desc: {zh: "负荷出现波动，建议预警并持续观察。", en: "Load fluctuates; trigger warning and continue observation."}},
             {color: "red", condition: {zh: "1.2 - 1.9（L/min）", en: "1.2 - 1.9 (L/min)"}, desc: {zh: "疑似异常流态，建议立即核查提升泵与阀组。", en: "Potential abnormal flow pattern; inspect lift pump and valve group now."}}
         ]
     },
     quality: {
         title: {zh: "综合水质评级标准", en: "Water Quality Grading Standard"},
-        desc: {zh: "分级参考《生活饮用水卫生标准》(GB 5749) 与《城镇污水再生利用 城市杂用水水质》(GB/T 18920)，结合本系统实时数据进行用途分类。", en: "The grading references GB 5749 and GB/T 18920, then maps real-time data to practical reuse categories."},
+        desc: {zh: "综合评分 = 电导率×40% + pH×35% + 浊度×25%（分项得分按区间折算后加权，总分取整）。以下为分级用途说明。", en: "Overall score = Conductivity×40% + pH×35% + Turbidity×25% (sub-scores from bands, then weighted; total is floored). Categories below describe intended reuse."},
         ranges: [
-            {color: "green", condition: {zh: "90-100：绿化灌溉优质回用水", en: "90-100: High-Quality Irrigation Reuse Water"}, desc: {zh: "满足较高质量回用要求，适用于绿化灌溉、景观补水等高标准非饮用场景", en: "Suitable for high-standard non-potable reuse such as landscape irrigation and ornamental water replenishment."}},
-            {color: "green", condition: {zh: "75-89：绿化灌溉回用水", en: "75-89: Landscape & Irrigation Reuse"}, desc: {zh: "适用于绿化灌溉与景观补水等非饮用场景。", en: "Suitable for landscaping and irrigation reuse in non-potable scenarios."}},
-            {color: "yellow", condition: {zh: "60-74：杂用回用水", en: "60-74: Municipal Reuse"}, desc: {zh: "参考 GB/T 18920，可用于冲厕、道路清洁等非接触杂用。", en: "Per GB/T 18920 reference, suitable for non-contact municipal reuse."}},
-            {color: "red", condition: {zh: "45-59：受限回用水", en: "45-59: Restricted Reuse"}, desc: {zh: "仅建议在受控场景回用，需加强过程管理。", en: "Only for controlled reuse scenarios."}},
-            {color: "red", condition: {zh: "0-44：待处理水", en: "0-44: Further Treatment Required"}, desc: {zh: "不建议回用，需继续处理后再使用。", en: "Reuse not recommended before further treatment."}}
+            {color: "green", condition: {zh: "90-100：绿化灌溉优质回用水", en: "90-100: Premium greening irrigation reuse"}, desc: {zh: "满足高标准绿化与灌溉用水需求。", en: "Meets high-standard landscaping and irrigation needs."}},
+            {color: "green", condition: {zh: "75-89：绿化灌溉回用水", en: "75-89: Greening irrigation reuse"}, desc: {zh: "适用于绿化灌溉与景观补水等非饮用场景。", en: "Suitable for landscaping and scenic replenishment (non-potable)."}},
+            {color: "yellow", condition: {zh: "60-74：杂用回用水", en: "60-74: Miscellaneous reuse"}, desc: {zh: "可用于冲厕、道路清洁等城镇杂用。", en: "Toilet flushing, road cleaning, and similar municipal reuse."}},
+            {color: "red", condition: {zh: "45-59：受限回用水", en: "45-59: Restricted reuse"}, desc: {zh: "仅建议在受控场景下回用。", en: "Controlled scenarios only."}},
+            {color: "red", condition: {zh: "0-44：待处理水", en: "0-44: Pending treatment"}, desc: {zh: "需继续处理后再使用。", en: "Further treatment before use."}}
         ]
     }
 };
@@ -310,7 +320,6 @@ let currentTrend = 'overview';
 let chartResizeBound = false;
 let latestLatencyMs = null;
 let latestLatencyStatus = 'gray';
-let currentZoomRange = { start: 55, end: 100 };
 
 const metricMeta = {
     f1: { field: 'field1', legendKey: 'legend_f1', axis: 'axis_flow', color: '#2563eb' },
@@ -348,7 +357,7 @@ function getTurbidityStatus(v) {
 function getFlowStatus(v) {
     if (v === null) return 'gray';
     if (v >= 2.0 && v <= 4.8) return 'green';
-    if ((v >= 0.3 && v <= 1.1) || (v >= 5.2 && v <= 6.0)) return 'yellow';
+    if ((v >= 0 && v <= 1.1) || (v >= 5.2 && v <= 6.0)) return 'yellow';
     return 'red';
 }
 
@@ -425,6 +434,33 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cfgOpenBtn) {
         cfgOpenBtn.addEventListener('click', () => setConfigPanelVisible(true));
     }
+
+    // Date filter
+    const dateFromInput = document.getElementById('date-from');
+    const dateToInput = document.getElementById('date-to');
+    const dateClearBtn = document.getElementById('date-clear-btn');
+    if (dateFromInput) {
+        dateFromInput.addEventListener('change', () => {
+            dateFrom = dateFromInput.value ? new Date(dateFromInput.value).getTime() : null;
+            updateChart();
+        });
+    }
+    if (dateToInput) {
+        dateToInput.addEventListener('change', () => {
+            dateTo = dateToInput.value ? new Date(dateToInput.value).getTime() : null;
+            updateChart();
+        });
+    }
+    if (dateClearBtn) {
+        dateClearBtn.addEventListener('click', () => {
+            dateFrom = null;
+            dateTo = null;
+            if (dateFromInput) dateFromInput.value = '';
+            if (dateToInput) dateToInput.value = '';
+            updateChart();
+        });
+    }
+
     setupTrendTabs();
     initConfigPanelVisibility();
     updateTranslations();
@@ -613,6 +649,8 @@ function closeModal() {
 
 // Data
 let allFeeds = [];
+let dateFrom = null;
+let dateTo = null;
 
 async function fetchData() {
     try {
@@ -628,12 +666,14 @@ async function fetchData() {
                 updateCards(latest);
                 updateStatusDots(latest);
                 updateClassification(latest);
-                updateChart();
             }
+        } else {
+            allFeeds = [];
         }
     } catch (e) {
         console.error("Data load failed", e);
     } finally {
+        updateChart();
         await measureNetworkLatency();
     }
 }
@@ -684,10 +724,7 @@ async function loadRuntimeConfig() {
         const aiKeyEl = document.getElementById('cfg-ai-key');
         if (channelEl) channelEl.value = cfg.thingspeak_channel_id || '';
         if (readKeyEl) readKeyEl.value = cfg.thingspeak_read_key || '';
-        if (aiKeyEl) aiKeyEl.value = '';
-        if (aiKeyEl && cfg.ai_api_key_configured) {
-             aiKeyEl.placeholder = cfg.ai_api_key_masked || 'Already configured';
-        }
+        if (aiKeyEl) aiKeyEl.value = cfg.ai_api_key || '';
     } catch (e) {
         console.error(e);
     }
@@ -898,201 +935,101 @@ function buildQualityModalDesc(baseDesc) {
     return `${baseDesc} ${latestClassification.score_formula}`;
 }
 
-// ---------- 时间轴与自适应范围 ----------
-function formatDateTimeFull(value) {
-    if (!value) return '--';
-    const d = new Date(value);
-    if (isNaN(d.getTime())) return String(value);
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    const dd = String(d.getDate()).padStart(2, '0');
-    const hh = String(d.getHours()).padStart(2, '0');
-    const mi = String(d.getMinutes()).padStart(2, '0');
-    const ss = String(d.getSeconds()).padStart(2, '0');
-    return `${yyyy}-${mm}-${dd} ${hh}:${mi}:${ss}`;
-}
-
-function formatTimeShort(d) {
-    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
-}
-
-function formatDateDividerLabel(d) {
-    if (currentLang === 'zh') {
-        return `${d.getMonth() + 1}月${d.getDate()}日 0:00`;
-    }
-    return `${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')} 00:00`;
-}
-
-function getTimeAxisData() {
-    return allFeeds.map((f, idx) => {
-        const raw = f.created_at || '';
-        const d = new Date(raw);
-        const valid = !isNaN(d.getTime());
-
-        let isNewDay = idx === 0;
-        let dividerLabel = null;
-
-        if (valid && idx > 0) {
-            const prevRaw = allFeeds[idx - 1].created_at;
-            const prev = new Date(prevRaw);
-            if (
-                !isNaN(prev.getTime()) &&
-                (d.getFullYear() !== prev.getFullYear() ||
-                 d.getMonth() !== prev.getMonth() ||
-                 d.getDate() !== prev.getDate())
-            ) {
-                isNewDay = true;
-                dividerLabel = formatDateDividerLabel(d);
-            } else {
-                isNewDay = false;
-            }
-        } else if (valid && idx === 0) {
-            dividerLabel = formatDateDividerLabel(d);
+function getFilteredFeeds() {
+    if (!dateFrom && !dateTo) return allFeeds;
+    return allFeeds.filter(f => {
+        const d = new Date(f.created_at);
+        if (isNaN(d)) return false;
+        const ts = d.getTime();
+        if (dateFrom && ts < dateFrom) return false;
+        if (dateTo) {
+            const endOfDay = new Date(dateTo);
+            endOfDay.setHours(23, 59, 59, 999);
+            if (ts > endOfDay.getTime()) return false;
         }
-
-        return {
-            raw,
-            date: d,
-            valid,
-            timestamp: valid ? d.getTime() : null,
-            full: valid ? formatDateTimeFull(raw) : String(raw || '--'),
-            short: valid ? formatTimeShort(d) : String(raw || '--'),
-            isNewDay,
-            dividerLabel
-        };
+        return true;
     });
 }
 
-function buildTimeAxisLabelFormatterForTimeAxis() {
-    return function (value) {
-        const d = new Date(value);
-        if (isNaN(d.getTime())) return '';
-        return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
-    };
+function updateChart() {
+    const el = document.getElementById('main-chart');
+    if (!el) return;
+
+    if (!chart) {
+        chart = echarts.init(el);
+        if (!chartResizeBound) {
+            window.addEventListener('resize', () => chart && chart.resize());
+            chartResizeBound = true;
+        }
+    }
+
+    el.classList.remove('skeleton');
+
+    const filtered = getFilteredFeeds();
+
+    if (filtered.length === 0) {
+        chart.clear();
+        chart.setOption({
+            title: {
+                text: T('no_data_label'),
+                left: 'center', top: 'middle',
+                textStyle: { fontSize: 16, color: '#94a3b8', fontWeight: 400 }
+            },
+            xAxis: { show: false },
+            yAxis: { show: false },
+            series: []
+        }, true);
+        return;
+    }
+
+    let option;
+    try {
+        option = currentTrend === 'overview'
+            ? buildOverviewOption(filtered)
+            : buildSingleOption(currentTrend, filtered);
+    } catch (e) {
+        console.error('Build chart option failed', e);
+        return;
+    }
+
+    chart.clear();
+    chart.setOption(option, true);
 }
 
-function getSeriesValues(key) {
+function getTimeLabels(feeds) {
+    return feeds.map(f => {
+        const d = new Date(f.created_at);
+        return `${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`;
+    });
+}
+
+function getSeriesValues(key, feeds) {
     const meta = metricMeta[key];
     if (!meta) return [];
-    return allFeeds.map(f => {
+    return feeds.map(f => {
         const value = safeNum(f[meta.field]);
         return key === 'cond' ? toMsCm(value) : value;
     });
 }
 
-function getAdaptiveValueRange(values, options = {}) {
-    const valid = values.filter(v => v !== null && !Number.isNaN(v));
-    const {
-        floor = null,
-        ceil = null,
-        minSpan = 1,
-        paddingRatio = 0.12,
-        smallValueBoost = true
-    } = options;
-
-    if (!valid.length) {
-        return {
-            min: floor !== null ? floor : 0,
-            max: ceil !== null ? ceil : Math.max(minSpan, 1)
-        };
-    }
-
-    let minVal = Math.min(...valid);
-    let maxVal = Math.max(...valid);
-
-    if (minVal === maxVal) {
-        const base = Math.abs(maxVal) || minSpan;
-        const delta = Math.max(base * 0.25, minSpan * 0.5);
-        minVal = minVal - delta;
-        maxVal = maxVal + delta;
-    }
-
-    let span = maxVal - minVal;
-    const padding = Math.max(span * paddingRatio, span < minSpan ? minSpan * 0.25 : 0);
-
-    let min = minVal - padding;
-    let max = maxVal + padding;
-
-    if (smallValueBoost && maxVal <= 1) {
-        min = Math.max(0, min);
-        max = Math.max(max, maxVal * 1.6 + 0.02);
-    }
-
-    if (floor !== null) min = Math.max(floor, min);
-    if (ceil !== null) max = Math.min(ceil, max);
-
-    if (max - min < minSpan) {
-        const center = (max + min) / 2;
-        min = center - minSpan / 2;
-        max = center + minSpan / 2;
-        if (floor !== null && min < floor) {
-            min = floor;
-            max = floor + minSpan;
-        }
-        if (ceil !== null && max > ceil) {
-            max = ceil;
-            min = ceil - minSpan;
-        }
-    }
-
-    if (floor !== null) min = Math.max(floor, min);
-    if (ceil !== null) max = Math.min(ceil, max);
-
-    return {
-        min: Number(min.toFixed(4)),
-        max: Number(max.toFixed(4))
-    };
-}
-
-function getVisibleIndexRange(total, zoomRange) {
-    if (total <= 0) return { startIndex: 0, endIndex: -1 };
-    const start = zoomRange?.start ?? 0;
-    const end = zoomRange?.end ?? 100;
-    const startIndex = Math.max(0, Math.floor((start / 100) * (total - 1)));
-    const endIndex = Math.min(total - 1, Math.ceil((end / 100) * (total - 1)));
-    return { startIndex, endIndex };
-}
-
-function getVisibleValues(values, zoomRange) {
-    const { startIndex, endIndex } = getVisibleIndexRange(values.length, zoomRange);
-    return values.slice(startIndex, endIndex + 1);
-}
-
-function getSingleAxisRange(key, values, zoomRange = null) {
-    const visibleValues = zoomRange ? getVisibleValues(values, zoomRange) : values;
-
-    if (key === 'ph') return { min: 0, max: 14 };
-    if (key === 'level') return { min: 0, max: 100 };
-    if (key === 'cond') {
-        return getAdaptiveValueRange(visibleValues, {
-            floor: 0,
-            minSpan: 0.2,
-            paddingRatio: 0.15,
-            smallValueBoost: true
-        });
-    }
+function getSingleAxisRange(key, values) {    if (key === 'ph') return { min: 0, max: 14 };
     if (key === 'turbidity') {
-        return getAdaptiveValueRange(visibleValues, {
-            floor: 0,
-            minSpan: 1,
-            paddingRatio: 0.15,
-            smallValueBoost: false
-        });
+        const valid = values.filter(v => v !== null);
+        const maxVal = valid.length ? Math.max(...valid) : 5;
+        return { min: 0, max: Math.max(6, Math.ceil(maxVal * 1.2)) };
     }
-    if (key === 'f1' || key === 'f2') {
-        return getAdaptiveValueRange(visibleValues, {
-            floor: 0,
-            minSpan: 0.05,
-            paddingRatio: 0.2,
-            smallValueBoost: true
-        });
-    }
-    return getAdaptiveValueRange(visibleValues, {
-        floor: 0,
-        minSpan: 1,
-        paddingRatio: 0.12,
-        smallValueBoost: false
-    });
+    if (key === 'level') return { min: 0, max: 100 };
+    if (key === 'cond') return { min: 0, max: 20 };
+    return { min: 0, max: 6 };
+}
+
+function normalizeSeries(values) {
+    const valid = values.filter(v => v !== null);
+    if (valid.length === 0) return values.map(() => null);
+    const min = Math.min(...valid);
+    const max = Math.max(...valid);
+    if (max === min) return values.map(v => (v === null ? null : 50));
+    return values.map(v => (v === null ? null : Number((((v - min) / (max - min)) * 100).toFixed(2))));
 }
 
 function calcQualityScoreFromFeed(feed) {
@@ -1114,163 +1051,52 @@ function calcQualityScoreFromFeed(feed) {
     return Math.max(0, Math.min(100, Math.floor(condScore * 0.4 + phScore * 0.35 + turbidityScore * 0.25)));
 }
 
-function getScoreSeries() {
-    return allFeeds.map(f => calcQualityScoreFromFeed(f));
+function getScoreSeries(feeds) {
+    return feeds.map(f => calcQualityScoreFromFeed(f));
 }
 
-function getDateDividerMeta(axisData) {
-    const { startIndex, endIndex } = getVisibleIndexRange(axisData.length, currentZoomRange);
-    const visibleDividers = [];
-    for (let i = startIndex; i <= endIndex; i++) {
-        const item = axisData[i];
-        if (item && item.isNewDay && item.timestamp !== null && item.dividerLabel) {
-            visibleDividers.push({
-                index: i,
-                xAxis: item.timestamp,
-                label: item.dividerLabel
-            });
-        }
-    }
-    return visibleDividers;
-}
-
-function buildDateDividerMarkLine(axisData) {
-    const dividerMeta = getDateDividerMeta(axisData);
-    if (!dividerMeta.length) return null;
-
+function buildOverviewOption(feeds) {
+    const times = getTimeLabels(feeds);
+    const scoreValues = getScoreSeries(feeds);
     return {
-        symbol: ['none', 'none'],
-        silent: true,
-        label: { show: false },
-        lineStyle: {
-            color: '#94a3b8',
-            width: 1,
-            type: 'dashed',
-            opacity: 0.85
-        },
-        data: dividerMeta.map(item => ({ xAxis: item.xAxis }))
-    };
-}
-
-function buildDateDividerGraphics(axisData) {
-    const dividerMeta = getDateDividerMeta(axisData);
-    if (!dividerMeta.length) return [];
-
-    const { startIndex, endIndex } = getVisibleIndexRange(axisData.length, currentZoomRange);
-    const visibleCount = Math.max(1, endIndex - startIndex);
-
-    return dividerMeta.map(item => {
-        const ratio = (item.index - startIndex) / visibleCount;
-        return {
-            type: 'text',
-            left: `${(ratio * 100).toFixed(3)}%`,
-            top: 30,
-            z: 100,
-            silent: true,
-            style: {
-                text: item.label,
-                fill: '#64748b',
-                font: '12px sans-serif',
-                align: 'left',
-                backgroundColor: 'rgba(255,255,255,0.82)',
-                padding: [2, 6],
-                borderRadius: 6
-            }
-        };
-    });
-}
-
-function attachChartEvents() {
-    if (!chart) return;
-    chart.off('datazoom');
-    chart.on('datazoom', () => {
-        const option = chart.getOption();
-        const zoom = option?.dataZoom?.[0];
-        if (zoom) {
-            currentZoomRange = {
-                start: zoom.start ?? currentZoomRange.start,
-                end: zoom.end ?? currentZoomRange.end
-            };
-        }
-        updateChart();
-    });
-}
-
-function updateChart() {
-    const el = document.getElementById('main-chart');
-    if (!el) return;
-    el.classList.remove('skeleton');
-    if (!chart) {
-        chart = echarts.init(el);
-    }
-
-    const option = currentTrend === 'overview'
-        ? buildOverviewOption()
-        : buildSingleOption(currentTrend);
-
-    chart.setOption(option, true);
-    attachChartEvents();
-
-    if (!chartResizeBound) {
-        window.addEventListener('resize', () => chart && chart.resize());
-        chartResizeBound = true;
-    }
-}
-
-function buildOverviewOption() {
-    const timeAxis = getTimeAxisData();
-    const scoreValues = getScoreSeries();
-    const formatter = buildTimeAxisLabelFormatterForTimeAxis();
-    const markLine = buildDateDividerMarkLine(timeAxis);
-    const graphics = buildDateDividerGraphics(timeAxis);
-
-    const seriesData = timeAxis
-        .map((t, idx) => [t.timestamp, scoreValues[idx]])
-        .filter(item => item[0] !== null);
-
-    return {
-        title: {
-            text: T('trend_overview_title'),
-            left: 'center',
-            textStyle: { fontSize: 16, fontWeight: 600, color: '#334155' }
-        },
+        title: { text: T('trend_overview_title'), left: 'center', textStyle: { fontSize: 16, fontWeight: 600, color: '#334155' } },
         tooltip: {
             trigger: 'axis',
             formatter: function (params) {
                 const p = Array.isArray(params) ? params[0] : params;
-                if (!p) return '--';
-                const rawTime = Array.isArray(p.value) ? p.value[0] : p.axisValue;
-                const score = Array.isArray(p.value) ? p.value[1] : p.data;
-                const timeText = formatDateTimeFull(rawTime);
-                return `${timeText}<br/>${T('legend_score')}: ${score ?? '--'}`;
+                const idx = p && typeof p.dataIndex === 'number' ? p.dataIndex : -1;
+                const feed = idx >= 0 ? feeds[idx] : null;
+                const score = p && p.data != null ? p.data : '--';
+                const f1 = feed && feed.field1 != null ? Number(feed.field1).toFixed(2) : '--';
+                const cond = feed && feed.field2 != null ? formatValue(toMsCm(safeNum(feed.field2)), 2) : '--';
+                const ph = feed && feed.field3 != null ? Number(feed.field3).toFixed(2) : '--';
+                const level = feed && feed.field4 != null ? Number(feed.field4).toFixed(2) : '--';
+                const turbidity = feed && feed.field5 != null ? Number(feed.field5).toFixed(2) : '--';
+                const f2 = feed && feed.field6 != null ? Number(feed.field6).toFixed(2) : '--';
+                const timeText = idx >= 0 && times[idx] ? times[idx] : '';
+                return [
+                    `${timeText}`,
+                    `${T('legend_score')}: ${score}`,
+                    `${T('legend_f1')}: ${f1}`,
+                    `${T('legend_cond')}: ${cond}`,
+                    `${T('legend_ph')}: ${ph}`,
+                    `${T('legend_level')}: ${level}`,
+                    `${T('legend_turbidity')}: ${turbidity}`,
+                    `${T('legend_f2')}: ${f2}`
+                ].join('<br/>');
             }
         },
-        legend: {
-            data: [T('legend_score')],
-            bottom: 0,
-            icon: 'roundRect',
-            textStyle: { fontSize: 13, color: '#475569' }
-        },
+        legend: { data: [T('legend_score')], bottom: 0, icon: 'roundRect', textStyle: { fontSize: 13, color: '#475569' } },
         dataZoom: [
-            { type: 'inside', start: currentZoomRange.start, end: currentZoomRange.end },
-            { type: 'slider', start: currentZoomRange.start, end: currentZoomRange.end, height: 18, bottom: 32 }
+            { type: 'inside', start: 0, end: 100 },
+            { start: 0, end: 100, height: 18, bottom: 32 }
         ],
         grid: { left: '9%', right: '5%', top: 58, bottom: 78, containLabel: true },
-        graphic: graphics,
         xAxis: {
-            type: 'time',
+            type: 'category',
             boundaryGap: false,
-            axisLabel: {
-                fontSize: 12,
-                color: '#64748b',
-                formatter
-            },
-            splitLine: {
-                show: true,
-                lineStyle: {
-                    color: 'rgba(148,163,184,0.15)'
-                }
-            }
+            data: times,
+            axisLabel: { fontSize: 12, color: '#64748b' }
         },
         yAxis: [{
             type: 'value',
@@ -1285,8 +1111,7 @@ function buildOverviewOption() {
             type: 'line',
             smooth: true,
             showSymbol: false,
-            data: seriesData,
-            markLine,
+            data: scoreValues,
             itemStyle: { color: '#0ea5e9' },
             lineStyle: { width: 3 },
             areaStyle: {
@@ -1300,70 +1125,32 @@ function buildOverviewOption() {
     };
 }
 
-function buildSingleOption(key) {
+function buildSingleOption(key, feeds) {
     const meta = metricMeta[key] || metricMeta.ph;
-    const timeAxis = getTimeAxisData();
-    const rawData = getSeriesValues(key);
-    const axisRange = getSingleAxisRange(key, rawData, currentZoomRange);
+    const times = getTimeLabels(feeds);
+    const data = getSeriesValues(key, feeds);
+    const axisRange = getSingleAxisRange(key, data);
     const label = T(meta.legendKey);
-    const formatter = buildTimeAxisLabelFormatterForTimeAxis();
-    const markLine = buildDateDividerMarkLine(timeAxis);
-    const graphics = buildDateDividerGraphics(timeAxis);
-
-    const seriesData = timeAxis
-        .map((t, idx) => [t.timestamp, rawData[idx]])
-        .filter(item => item[0] !== null);
-
     return {
-        title: {
-            text: label,
-            left: 'center',
-            textStyle: { fontSize: 16, fontWeight: 600, color: '#334155' }
-        },
-        tooltip: {
-            trigger: 'axis',
-            formatter: function (params) {
-                const p = Array.isArray(params) ? params[0] : params;
-                if (!p) return '--';
-                const rawTime = Array.isArray(p.value) ? p.value[0] : p.axisValue;
-                const val = Array.isArray(p.value) ? p.value[1] : p.data;
-                const timeText = formatDateTimeFull(rawTime);
-                return `${timeText}<br/>${label}: ${val ?? '--'}`;
-            }
-        },
-        legend: {
-            data: [label],
-            bottom: 0,
-            icon: 'roundRect',
-            textStyle: { fontSize: 13, color: '#475569' }
-        },
+        title: { text: label, left: 'center', textStyle: { fontSize: 16, fontWeight: 600, color: '#334155' } },
+        tooltip: { trigger: 'axis' },
+        legend: { data: [label], bottom: 0, icon: 'roundRect', textStyle: { fontSize: 13, color: '#475569' } },
         dataZoom: [
-            { type: 'inside', start: currentZoomRange.start, end: currentZoomRange.end },
-            { type: 'slider', start: currentZoomRange.start, end: currentZoomRange.end, height: 18, bottom: 32 }
+            { type: 'inside', start: 0, end: 100 },
+            { start: 0, end: 100, height: 18, bottom: 32 }
         ],
         grid: { left: '9%', right: '5%', top: 58, bottom: 78, containLabel: true },
-        graphic: graphics,
         xAxis: {
-            type: 'time',
+            type: 'category',
             boundaryGap: false,
-            axisLabel: {
-                fontSize: 12,
-                color: '#64748b',
-                formatter
-            },
-            splitLine: {
-                show: true,
-                lineStyle: {
-                    color: 'rgba(148,163,184,0.15)'
-                }
-            }
+            data: times,
+            axisLabel: { fontSize: 12, color: '#64748b' }
         },
         yAxis: [{
             type: 'value',
             name: T(meta.axis),
             min: axisRange.min,
             max: axisRange.max,
-            scale: true,
             nameTextStyle: { fontSize: 12, color: '#64748b' },
             axisLabel: { fontSize: 12, color: '#64748b' }
         }],
@@ -1372,8 +1159,7 @@ function buildSingleOption(key) {
             type: 'line',
             smooth: true,
             showSymbol: false,
-            data: seriesData,
-            markLine,
+            data,
             itemStyle: { color: meta.color },
             lineStyle: { width: 3 },
             areaStyle: {
