@@ -12,15 +12,7 @@ const i18n = {
         title: "智能灰水处理监控平台",
         guide_btn: "向导",
         quality_title: "综合水质评级",
-        date_from: "从",
-        date_to: "至",
-        date_all: "全部",
-        date_filter_active: "日期筛选已激活",
         chart_title: "参数变化趋势与监测视图",
-        date_from: "从",
-        date_to: "至",
-        date_all: "全部",
-        date_filter_active: "日期筛选已激活",
         card_ph: "PH值",
         card_cond: "电导率（ms/cm）",
         card_level: "液位（%）",
@@ -38,7 +30,6 @@ const i18n = {
         score_detail_ph: "pH得分",
         score_detail_cond: "电导率得分",
         score_detail_turbidity: "浊度得分",
-        trend_overview_desc: "系统评分变化图：每个时间点都按与上方一致的评分规则计算出0-100分，展示历史评分趋势。",
         config_title: "数据源与AI配置",
         config_channel: "ThingSpeak Channel ID",
         config_read_key: "ThingSpeak Read Key",
@@ -71,7 +62,6 @@ const i18n = {
         axis_turbidity: "浊度(NTU)",
         axis_level: "液位(%)",
         axis_flow: "流量(L/min)",
-        axis_normalized: "归一化变化(%)",
         axis_score: "系统评分",
         net_latency: "网络延迟",
         net_strength_green: "信号强",
@@ -91,7 +81,7 @@ const i18n = {
         guide_step2: "系统会把当前数据自动汇总成一个水质评分，方便你快速判断整体状态。",
         guide_step3: "在这里可以查看整体与单项变化趋势，滑动和悬停都能轻松看细节。",
         guide_step4: "有疑问随时问小帮手，我们会尽量用通俗的话帮你分析。",
-        guide_step5: "这里可以手动更新数据、导出当前数据，并查看WiFi网络延迟与信号强弱。",
+        guide_step5: "这里可以手动更新数据、导出当前数据、选择日期并查看WiFi网络延迟与信号强弱。",
         guide_step6: "这里可以打开配置面板，修改数据源与AI配置。",
         guide_next: "下一步",
         guide_prev: "上一步",
@@ -126,21 +116,15 @@ const i18n = {
         tip_level: "储水池液位百分比 (0-100%)",
         tip_f1: "轻污染入水流量监测",
         tip_f2: "重污染入水流量监测",
-        no_data_label: "暂无数据"
+        no_data_label: "暂无数据",
+        date_pick_label: "选择日期",
+        no_data_for_selected_date: "当前日期无数据"
     },
     en: {
         title: "Smart Greywater Monitoring",
         guide_btn: "Guide",
         quality_title: "Water Quality Grade",
-        date_from: "From",
-        date_to: "To",
-        date_all: "All",
-        date_filter_active: "Date filter active",
         chart_title: "Trend Monitoring & Visualization",
-        date_from: "From",
-        date_to: "To",
-        date_all: "All",
-        date_filter_active: "Date filter active",
         card_ph: "PH",
         card_cond: "Conductivity (mS/cm)",
         card_level: "Water Level (%)",
@@ -158,7 +142,6 @@ const i18n = {
         score_detail_ph: "pH score",
         score_detail_cond: "Conductivity score",
         score_detail_turbidity: "Turbidity score",
-        trend_overview_desc: "System Score Trend: each timestamp is scored by the same rule used in the quality card, then plotted from 0 to 100.",
         config_title: "Data & AI Config",
         config_channel: "ThingSpeak Channel ID",
         config_read_key: "ThingSpeak Read Key",
@@ -191,7 +174,6 @@ const i18n = {
         axis_turbidity: "Turbidity (NTU)",
         axis_level: "Level (%)",
         axis_flow: "Flow (L/min)",
-        axis_normalized: "Normalized Change (%)",
         axis_score: "System Score (pts)",
         net_latency: "Latency",
         net_strength_green: "Strong",
@@ -207,11 +189,11 @@ const i18n = {
         trend_f1: "Inflow (Light) Trend",
         trend_f2: "Inflow (Heavy) Trend",
         trend_overview_title: "System Score Trend",
-        guide_step1: "These cards show real-time data for 6 channels. Click any card for details. Colored dots indicate status: green=normal, yellow=warning, red=abnormal.",
+        guide_step1: "These cards show real-time data for 6 channels. Click any card for details.",
         guide_step2: "The system automatically evaluates overall water quality grade.",
-        guide_step3: "This section includes an overview trend and five single-parameter views with zoom and hover.",
+        guide_step3: "This section includes trend views. You can also choose a date to view only that day's data.",
         guide_step4: "Have questions? Ask the AI assistant anytime!",
-        guide_step5: "Use these controls to refresh/export data and check WiFi latency and signal strength.",
+        guide_step5: "Use these controls to refresh, export, choose date, and check network latency.",
         guide_step6: "Use this entry to open the config panel for data source and AI settings.",
         guide_next: "Next",
         guide_prev: "Previous",
@@ -219,7 +201,7 @@ const i18n = {
         context_prefix: "Current latest water quality data:",
         context_ph: "PH",
         context_cond: "Conductivity (ms/cm)",
-        context_turbidity: "Conductivity",
+        context_turbidity: "Turbidity (NTU)",
         context_level: "Water Level",
         context_f1: "Inflow (Light)",
         context_f2: "Inflow (Heavy)",
@@ -246,7 +228,9 @@ const i18n = {
         tip_level: "Storage tank level percentage (0-100%)",
         tip_f1: "Light-pollution inflow monitoring",
         tip_f2: "Heavy-pollution inflow monitoring",
-        no_data_label: "No data available"
+        no_data_label: "No data available",
+        date_pick_label: "Select Date",
+        no_data_for_selected_date: "No data for the selected date"
     }
 };
 
@@ -314,7 +298,7 @@ const modalConfigs = {
         ranges: [
             {color: "green", condition: {zh: "90-100：绿化灌溉优质回用水", en: "90-100: Premium greening irrigation reuse"}, desc: {zh: "满足高标准绿化与灌溉用水需求。", en: "Meets high-standard landscaping and irrigation needs."}},
             {color: "green", condition: {zh: "75-89：绿化灌溉回用水", en: "75-89: Greening irrigation reuse"}, desc: {zh: "适用于绿化灌溉与景观补水等非饮用场景。", en: "Suitable for landscaping and scenic replenishment (non-potable)."}},
-            {color: "yellow", condition: {zh: "60-74：杂用回用水", en: "60-74: Miscellaneous reuse"}, desc: {zh: "可用于冲厕、道路清洁等非接触杂用。", en: "Toilet flushing, road cleaning, and similar municipal reuse."}},
+            {color: "yellow", condition: {zh: "60-74：杂用回用水", en: "60-74: Miscellaneous reuse"}, desc: {zh: "可用于冲厕、道路清洁等城镇杂用。", en: "Toilet flushing, road cleaning, and similar municipal reuse."}},
             {color: "red", condition: {zh: "45-59：受限回用水", en: "45-59: Restricted reuse"}, desc: {zh: "仅建议在受控场景下回用。", en: "Controlled scenarios only."}},
             {color: "red", condition: {zh: "0-44：待处理水", en: "0-44: Pending treatment"}, desc: {zh: "需继续处理后再使用。", en: "Further treatment before use."}}
         ]
@@ -328,6 +312,7 @@ let currentTrend = 'overview';
 let chartResizeBound = false;
 let latestLatencyMs = null;
 let latestLatencyStatus = 'gray';
+let selectedChartDate = '';
 
 const metricMeta = {
     f1: { field: 'field1', legendKey: 'legend_f1', axis: 'axis_flow', color: '#2563eb' },
@@ -369,7 +354,7 @@ function getFlowStatus(v) {
 }
 
 function setDot(id, status) {
-    const el = document.getElementByById(id);
+    const el = document.getElementById(id);
     if (!el) return;
     el.className = 'status-dot ' + status;
 }
@@ -400,13 +385,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedLang = localStorage.getItem('lang') || '';
     const browserLang = navigator.language && navigator.language.toLowerCase().startsWith('en') ? 'en' : 'zh';
     currentLang = savedLang === 'en' || savedLang === 'zh' ? savedLang : browserLang;
+
     const langSwitch = document.getElementById('lang-switch');
     if (langSwitch) {
         langSwitch.value = currentLang;
     }
     document.documentElement.lang = currentLang === 'zh' ? 'zh-CN' : 'en';
 
-    document.getElementById('lang-switch').addEventListener('change', (e) => {
+    document.getElementById('lang-switch')?.addEventListener('change', (e) => {
         currentLang = e.target.value;
         localStorage.setItem('lang', currentLang);
         document.documentElement.lang = currentLang === 'zh' ? 'zh-CN' : 'en';
@@ -414,57 +400,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (latestDataCache) {
             updateStatusDots(latestDataCache);
             updateClassification(latestDataCache);
-            updateChart();
         }
+        updateChart();
     });
 
-    document.getElementById('guide-btn').addEventListener('click', startGuide);
-    const refreshBtn = document.getElementById('refresh-btn');
-    if (refreshBtn) {
-        refreshBtn.addEventListener('click', refreshData);
-    }
-    const exportBtn = document.getElementById('export-btn');
-    if (exportBtn) {
-        exportBtn.addEventListener('click', exportData);
-    }
-    const cfgSaveBtn = document.getElementById('cfg-save-btn');
-    if (cfgSaveBtn) {
-        cfgSaveBtn.addEventListener('click', saveRuntimeConfig);
-    }
-    const cfgCloseBtn = document.getElementById('cfg-close-btn');
-    if (cfgCloseBtn) {
-        cfgCloseBtn.addEventListener('click', () => setConfigPanelVisible(false));
-    }
-    const cfgOpenBtn = document.getElementById('cfg-toggle-open');
-    if (cfgOpenBtn) {
-        cfgOpenBtn.addEventListener('click', () => setConfigPanelVisible(true));
-    }
+    document.getElementById('guide-btn')?.addEventListener('click', startGuide);
+    document.getElementById('refresh-btn')?.addEventListener('click', refreshData);
+    document.getElementById('export-btn')?.addEventListener('click', exportData);
+    document.getElementById('cfg-save-btn')?.addEventListener('click', saveRuntimeConfig);
+    document.getElementById('cfg-close-btn')?.addEventListener('click', () => setConfigPanelVisible(false));
+    document.getElementById('cfg-toggle-open')?.addEventListener('click', () => setConfigPanelVisible(true));
 
-    // Date filter
-    const dateFromInput = document.getElementById('date-from');
-    const dateToInput = document.getElementById('date-to');
-    const dateClearBtn = document.getElementById('date-clear-btn');
-    if (dateFromInput) {
-        dateFromInput.addEventListener('change', () => {
-            dateFrom = dateFromInput.value ? new Date(dateFromInput.value).getTime() : null;
-            updateDateFilterBanner();
-            updateChart();
-        });
-    }
-    if (dateToInput) {
-        dateToInput.addEventListener('change', () => {
-            dateTo = dateToInput.value ? new Date(dateToInput.value).getTime() : null;
-            updateDateFilterBanner();
-            updateChart();
-        });
-    }
-    if (dateClearBtn) {
-        dateClearBtn.addEventListener('click', () => {
-            dateFrom = null;
-            dateTo = null;
-            if (dateFromInput) dateFromInput.value = '';
-            if (dateToInput) dateToInput.value = '';
-            updateDateFilterBanner();
+    const chartDateInput = document.getElementById('chart-date-filter');
+    if (chartDateInput) {
+        chartDateInput.addEventListener('change', (e) => {
+            selectedChartDate = e.target.value || '';
             updateChart();
         });
     }
@@ -522,6 +472,7 @@ function updateTranslations() {
 
     const greetingEl = document.querySelector('#chat-messages [data-i18n="ai_greeting"]');
     if (greetingEl) greetingEl.textContent = T('ai_greeting');
+
     updateTrendTabs();
     initTooltips();
     updateLatencyIndicator();
@@ -534,18 +485,13 @@ function startGuide() {
         { element: '#step-chart', intro: T('guide_step3') }
     ];
     const aiStepElement = document.querySelector('#step-ai');
-    if (aiStepElement) {
-        steps.push({ element: '#step-ai', intro: T('guide_step4') });
-    }
+    if (aiStepElement) steps.push({ element: '#step-ai', intro: T('guide_step4') });
     const actionsStepElement = document.querySelector('#step-actions');
-    if (actionsStepElement) {
-        steps.push({ element: '#step-actions', intro: T('guide_step5') });
-    }
+    if (actionsStepElement) steps.push({ element: '#step-actions', intro: T('guide_step5') });
     const configStepSelector = document.querySelector('#cfg-toggle-open:not(.hidden)') ? '#cfg-toggle-open' : '#config-panel';
     const configStepElement = document.querySelector(configStepSelector);
-    if (configStepElement) {
-        steps.push({ element: configStepSelector, intro: T('guide_step6') });
-    }
+    if (configStepElement) steps.push({ element: configStepSelector, intro: T('guide_step6') });
+
     introJs().setOptions({
         nextLabel: T('guide_next'),
         prevLabel: T('guide_prev'),
@@ -566,6 +512,16 @@ function toMsCm(v) {
 
 function formatValue(v, digits = 2) {
     return v === null ? '--' : Number(v).toFixed(digits);
+}
+
+function formatDateOnly(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return '';
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
 }
 
 function getLatencyStatus(ms) {
@@ -621,16 +577,17 @@ function openModal(type) {
     rangesContainer.innerHTML = '';
     config.ranges.forEach(r => {
         const bg = r.color === 'green' ? 'bg-green-50 border-green-200' :
-                   r.color === 'yellow' ? 'bg-yellow-50 border-yellow-200' : 'bg-red-50 border-red-200';
+            r.color === 'yellow' ? 'bg-yellow-50 border-yellow-200' : 'bg-red-50 border-red-200';
         const dot = r.color === 'green' ? 'green' : r.color === 'yellow' ? 'yellow' : 'red';
         const tc = r.color === 'green' ? 'text-green-700' :
-                   r.color === 'yellow' ? 'text-yellow-700' : 'text-red-700';
+            r.color === 'yellow' ? 'text-yellow-700' : 'text-red-700';
         rangesContainer.innerHTML += `
             <div class="flex items-center gap-3 p-3 rounded-xl border ${bg}">
                 <span class="status-dot ${dot}"></span>
                 <div><span class="font-bold ${tc}">${r.condition[currentLang]}</span> <span class="text-sm text-gray-600">${r.desc[currentLang]}</span></div>
             </div>`;
     });
+
     const scoreDetailsEl = document.getElementById('modal-score-details');
     if (scoreDetailsEl) {
         if (type === 'quality' && latestClassification) {
@@ -655,25 +612,6 @@ function closeModal() {
 }
 
 let allFeeds = [];
-let dateFrom = null;
-let dateTo = null;
-
-function updateDateFilterBanner() {
-    const banner = document.getElementById('date-filter-banner');
-    const rangeEl = document.getElementById('date-filter-range');
-    if (!banner) return;
-    const hasFilter = dateFrom || dateTo;
-    banner.classList.toggle('hidden', !hasFilter);
-    if (hasFilter && rangeEl) {
-        const fmt = (ts) => {
-            const d = new Date(ts);
-            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-        };
-        const fromText = dateFrom ? fmt(dateFrom) : '--';
-        const toText = dateTo ? fmt(dateTo) : '--';
-        rangeEl.textContent = `${T('date_from')}: ${fromText}  ${T('date_to')}: ${toText}`;
-    }
-}
 
 async function fetchData() {
     try {
@@ -683,18 +621,26 @@ async function fetchData() {
             allFeeds = data.feeds.filter(f => (
                 f.score !== undefined && f.score !== null
             ) || f.field1 || f.field2 || f.field3 || f.field4 || f.field5 || f.field6);
+
             if (allFeeds.length > 0) {
                 const latest = allFeeds[allFeeds.length - 1];
                 latestDataCache = latest;
                 updateCards(latest);
                 updateStatusDots(latest);
                 updateClassification(latest);
+
+                const chartDateInput = document.getElementById('chart-date-filter');
+                if (chartDateInput && !selectedChartDate) {
+                    selectedChartDate = formatDateOnly(latest.created_at);
+                    chartDateInput.value = selectedChartDate;
+                }
             }
         } else {
             allFeeds = [];
         }
     } catch (e) {
         console.error("Data load failed", e);
+        allFeeds = [];
     } finally {
         updateChart();
         await measureNetworkLatency();
@@ -715,9 +661,11 @@ async function refreshData() {
 }
 
 function exportData() {
-    if (!allFeeds.length) return;
+    const exportFeeds = getFilteredFeedsForChart();
+    if (!exportFeeds.length) return;
+
     const header = ['created_at', 'inflow_light', 'conductivity', 'ph', 'waterlevel', 'turbidity', 'inflow_heavy', 'system_score'];
-    const rows = allFeeds.map(f => [
+    const rows = exportFeeds.map(f => [
         f.created_at || '',
         f.field1 ?? '',
         f.field2 ?? '',
@@ -810,6 +758,7 @@ function updateCards(latest) {
     };
     for (let id in map) {
         const el = document.getElementById(id);
+        if (!el) continue;
         el.classList.remove('skeleton');
         el.textContent = formatValue(safeNum(map[id]), 2);
     }
@@ -823,12 +772,12 @@ function updateStatusDots(latest) {
     const turbidity = safeNum(latest.field5);
     const f2 = safeNum(latest.field6);
 
-    setDot('range-dot-cond', getCondStatus(cond));
-    setDot('range-dot-ph', getPhStatus(ph));
-    setDot('range-dot-level', getLevelStatus(level));
-    setDot('range-dot-turbidity', getTurbidityStatus(turbidity));
-    setDot('range-dot-f1', getFlowStatus(f1));
-    setDot('range-dot-f2', getFlowStatus(f2));
+    setDot('dot-cond', getCondStatus(cond));
+    setDot('dot-ph', getPhStatus(ph));
+    setDot('dot-level', getLevelStatus(level));
+    setDot('dot-turbidity', getTurbidityStatus(turbidity));
+    setDot('dot-f1', getFlowStatus(f1));
+    setDot('dot-f2', getFlowStatus(f2));
 
     const condStatus = getCondStatus(cond);
     const phStatus = getPhStatus(ph);
@@ -837,12 +786,26 @@ function updateStatusDots(latest) {
     const flow1Status = getFlowStatus(f1);
     const flow2Status = getFlowStatus(f2);
 
-    document.getElementById('range-cond').textContent = condStatus === 'green' ? T('range_cond_green') : condStatus === 'yellow' ? T('range_cond_yellow') : condStatus === 'red' ? T('range_cond_red') : T('range_unknown');
-    document.getElementById('range-ph').textContent = phStatus === 'green' ? T('range_ph_green') : phStatus === 'yellow' ? T('range_ph_yellow') : phStatus === 'red' ? T('range_ph_red') : T('range_unknown');
-    document.getElementById('range-level').textContent = levelStatus === 'green' ? T('range_level_green') : levelStatus === 'red' ? T('range_level_red') : T('range_unknown');
-    document.getElementById('range-turbidity').textContent = turbidityStatus === 'green' ? T('range_turbidity_green') : turbidityStatus === 'yellow' ? T('range_turbidity_yellow') : turbidityStatus === 'red' ? T('range_turbidity_red') : T('range_unknown');
-    document.getElementById('range-f1').textContent = flow1Status === 'green' ? T('range_flow_green') : flow1Status === 'yellow' ? T('range_flow_yellow') : flow1Status === 'red' ? T('range_flow_red') : T('range_unknown');
-    document.getElementById('range-f2').textContent = flow2Status === 'green' ? T('range_flow_green') : flow2Status === 'yellow' ? T('range_flow_yellow') : flow2Status === 'red' ? T('range_flow_red') : T('range_unknown');
+    setDot('range-dot-cond', condStatus);
+    setDot('range-dot-ph', phStatus);
+    setDot('range-dot-level', levelStatus);
+    setDot('range-dot-turbidity', turbidityStatus);
+    setDot('range-dot-f1', flow1Status);
+    setDot('range-dot-f2', flow2Status);
+
+    const condRange = condStatus === 'green' ? T('range_cond_green') : condStatus === 'yellow' ? T('range_cond_yellow') : condStatus === 'red' ? T('range_cond_red') : T('range_unknown');
+    const phRange = phStatus === 'green' ? T('range_ph_green') : phStatus === 'yellow' ? T('range_ph_yellow') : phStatus === 'red' ? T('range_ph_red') : T('range_unknown');
+    const levelRange = levelStatus === 'green' ? T('range_level_green') : levelStatus === 'red' ? T('range_level_red') : T('range_unknown');
+    const turbidityRange = turbidityStatus === 'green' ? T('range_turbidity_green') : turbidityStatus === 'yellow' ? T('range_turbidity_yellow') : turbidityStatus === 'red' ? T('range_turbidity_red') : T('range_unknown');
+    const flow1Range = flow1Status === 'green' ? T('range_flow_green') : flow1Status === 'yellow' ? T('range_flow_yellow') : flow1Status === 'red' ? T('range_flow_red') : T('range_unknown');
+    const flow2Range = flow2Status === 'green' ? T('range_flow_green') : flow2Status === 'yellow' ? T('range_flow_yellow') : flow2Status === 'red' ? T('range_flow_red') : T('range_unknown');
+
+    document.getElementById('range-cond').textContent = condRange;
+    document.getElementById('range-ph').textContent = phRange;
+    document.getElementById('range-level').textContent = levelRange;
+    document.getElementById('range-turbidity').textContent = turbidityRange;
+    document.getElementById('range-f1').textContent = flow1Range;
+    document.getElementById('range-f2').textContent = flow2Range;
 }
 
 async function updateClassification(latest) {
@@ -862,13 +825,17 @@ async function updateClassification(latest) {
         latestClassification = c;
 
         const gradeEl = document.getElementById('quality-grade');
-        gradeEl.classList.remove('skeleton');
-        gradeEl.textContent = c.grade;
-        gradeEl.style.backgroundColor = c.color;
+        if (gradeEl) {
+            gradeEl.classList.remove('skeleton');
+            gradeEl.textContent = c.grade;
+            gradeEl.style.backgroundColor = c.color;
+        }
 
         const scoreEl = document.getElementById('quality-score');
-        scoreEl.classList.remove('skeleton', 'w-40', 'h-6');
-        scoreEl.textContent = `${T('sys_score')}${c.score}`;
+        if (scoreEl) {
+            scoreEl.classList.remove('skeleton', 'w-40', 'h-6');
+            scoreEl.textContent = `${T('sys_score')}${c.score}`;
+        }
 
         const usageDetailEl = document.getElementById('quality-usage-detail');
         if (usageDetailEl) {
@@ -876,8 +843,10 @@ async function updateClassification(latest) {
         }
 
         const reasonEl = document.getElementById('quality-reason');
-        reasonEl.classList.remove('skeleton', 'min-h-[1.25rem]');
-        reasonEl.textContent = buildExtendedReason(latest, c.reason || '');
+        if (reasonEl) {
+            reasonEl.classList.remove('skeleton', 'min-h-[1.25rem]');
+            reasonEl.textContent = buildExtendedReason(latest, c.reason || '');
+        }
     } catch (e) {
         console.error(e);
     }
@@ -944,20 +913,9 @@ function buildQualityModalDesc(baseDesc) {
     return `${baseDesc} ${latestClassification.score_formula}`;
 }
 
-function getFilteredFeeds() {
-    if (!dateFrom && !dateTo) return allFeeds;
-    return allFeeds.filter(f => {
-        const d = new Date(f.created_at);
-        if (isNaN(d)) return false;
-        const ts = d.getTime();
-        if (dateFrom && ts < dateFrom) return false;
-        if (dateTo) {
-            const endOfDay = new Date(dateTo);
-            endOfDay.setHours(23, 59, 59, 999);
-            if (ts > endOfDay.getTime()) return false;
-        }
-        return true;
-    });
+function getFilteredFeedsForChart() {
+    if (!selectedChartDate) return allFeeds;
+    return allFeeds.filter(f => formatDateOnly(f.created_at) === selectedChartDate);
 }
 
 function updateChart() {
@@ -973,16 +931,16 @@ function updateChart() {
     }
 
     el.classList.remove('skeleton');
-
-    const filtered = getFilteredFeeds();
+    const filtered = getFilteredFeedsForChart();
 
     if (filtered.length === 0) {
         chart.clear();
         chart.setOption({
             title: {
-                text: T('no_data_label'),
-                left: 'center', top: 'middle',
-                textStyle: { fontSize: 16, color: '#94a3b8', fontWeight: 400 }
+                text: selectedChartDate ? T('no_data_for_selected_date') : T('no_data_label'),
+                left: 'center',
+                top: 'middle',
+                textStyle: { fontSize: 18, color: '#94a3b8', fontWeight: 500 }
             },
             xAxis: { show: false },
             yAxis: { show: false },
@@ -1174,6 +1132,7 @@ function buildSingleOption(key, feeds) {
     };
 }
 
+// AI Chat
 const chatBox = document.getElementById('chat-messages');
 const aiInput = document.getElementById('ai-input');
 const aiSendBtn = document.getElementById('ai-send');
@@ -1229,10 +1188,10 @@ if (aiSendBtn && aiInput && chatBox) {
                 body: JSON.stringify({ question: q, context: buildContext(), lang: currentLang })
             });
             const data = await res.json();
-            document.getElementById(loadingId).remove();
+            document.getElementById(loadingId)?.remove();
             appendChat('ai', data.answer || data.error || T('no_reply'));
         } catch (e) {
-            document.getElementById(loadingId).remove();
+            document.getElementById(loadingId)?.remove();
             appendChat('ai', T('net_error'));
         }
     });
