@@ -158,6 +158,30 @@
             }
         }
         
+        .table-wrap table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .table-wrap th,
+        .table-wrap td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e2e8f0;
+            white-space: nowrap;
+        }
+        .table-wrap th {
+            background: #f8fafc;
+            color: #475569;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+        .table-wrap td {
+            color: #334155;
+            font-size: 0.875rem;
+        }
+        .table-wrap tbody tr:hover {
+            background: rgba(59,130,246,0.04);
+        }
+
         ::-webkit-scrollbar { width:6px; height: 6px; } 
         ::-webkit-scrollbar-track { background:transparent; } 
         ::-webkit-scrollbar-thumb { background:rgba(148,163,184,0.4); border-radius:4px; transition: background 0.2s; }
@@ -294,6 +318,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="grid grid-cols-1 xl:grid-cols-[248px_1fr] gap-4">
                     <div class="space-y-2 flex flex-col" id="trend-tabs">
                         <button class="trend-tab active" data-trend="overview" data-i18n="trend_all">总览趋势图</button>
@@ -305,6 +330,39 @@
                         <button class="trend-tab" data-trend="f2" data-i18n="trend_f2">入水流量（重）趋势</button>
                     </div>
                     <div id="main-chart" style="height:420px;width:100%;" class="skeleton rounded-xl"></div>
+                </div>
+            </div>
+
+            <div class="glass p-6 rounded-2xl" id="step-table">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+                    <h2 class="text-lg font-bold text-slate-600" data-i18n="table_title">历史数据表</h2>
+                    <div class="flex items-center gap-3">
+                        <label for="table-date-filter" class="text-sm font-medium text-slate-600" data-i18n="table_date_filter_label">选择日期</label>
+                        <input
+                            type="date"
+                            id="table-date-filter"
+                            class="px-3 py-2 rounded-xl border border-slate-300 bg-white/80 text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        />
+                    </div>
+                </div>
+
+                <div id="data-table-empty" style="display:none;" class="text-center text-slate-500 py-6"></div>
+
+                <div class="table-wrap overflow-x-auto rounded-2xl border border-slate-200 bg-white/80">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th data-i18n="table_time">时间</th>
+                                <th data-i18n="table_f1">入水流量（轻）</th>
+                                <th data-i18n="table_cond">电导率</th>
+                                <th data-i18n="table_ph">PH值</th>
+                                <th data-i18n="table_level">液位</th>
+                                <th data-i18n="table_turbidity">浊度</th>
+                                <th data-i18n="table_f2">入水流量（重）</th>
+                            </tr>
+                        </thead>
+                        <tbody id="data-table-body"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
